@@ -3,7 +3,7 @@ var router = express.Router();
 const DButils = require("./utils/DButils");
 const users_utils = require("./utils/users_utils");
 const players_utils = require("./utils/players_utils");
-
+const teams_utils = require("./utils/teamsFavorite_utills")
 /**
  * Authenticate all incoming requests by middleware
  */
@@ -65,7 +65,7 @@ router.get("/favoritePlayers", async (req, res, next) => {
 router.post("/favoriteTeams", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
-    const player_id = req.body.teamId;
+    const team_id = req.body.teamId;
     await users_utils.markTeamAsFavorite(user_id, team_id);
     res.status(201).send("The team successfully saved as favorite");
   } catch (error) {
@@ -80,7 +80,7 @@ router.get("/favoriteTeams", async (req, res, next) => {
     const team_ids = await users_utils.getFavoriteTeams(user_id);
     let team_ids_array = [];
     team_ids.map((element) => team_ids_array.push(element.team_id)); //extracting the teams id ids into array
-    const results = await players_utils.getteamsInfo(team_ids_array);
+    const results = await teams_utils.createShowAllTeams(team_ids_array);
     res.status(200).send(results);
   } catch (error) {
     next(error);

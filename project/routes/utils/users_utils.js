@@ -28,6 +28,7 @@ async function getFavoriteTeams(user_id){
   const team_ids = await DButils.execQuery(
     `select team_id from FavoriteTeams where user_id='${user_id}'`
   );
+  return team_ids;
 }
 
 //----------------------------------------------------------Game functions----------------------------------
@@ -40,9 +41,10 @@ async function markGameAsFavorite(user_id,game_id){
 }
 
 async function getFavoriteGames(user_id){
-  const team_ids = await DButils.execQuery(
+  const game_ids = await DButils.execQuery(
     `select game_id from FavoriteGames where user_id='${user_id}'`
   );
+  return game_ids
 }
 
 

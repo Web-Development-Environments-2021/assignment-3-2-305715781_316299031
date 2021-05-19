@@ -5,17 +5,16 @@ const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 
 
 
-
 async function getCountryID(team_id){
     let team = [];
     let countryID=[];
     const team = await axios.get(`${api_domain}/teams/${team_id}`, {
         params: {
           api_token: process.env.api_token,
-        },
+        }
       });
       countryID.push(team.data.data.country_id)
-      return countryID;
+  return countryID;
 }
 
 

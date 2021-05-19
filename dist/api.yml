@@ -274,7 +274,7 @@ components:
     body_1:
       type: object
       properties:
-        playerId:
+        teamId:
           type: string
           description: team's id which the user saved
           example: "85"
