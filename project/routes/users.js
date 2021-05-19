@@ -9,7 +9,7 @@ const players_utils = require("./utils/players_utils");
  */
 router.use(async function (req, res, next) {
   if (req.session && req.session.user_id) {
-    DButils.execQuery("SELECT user_id FROM users_tirgul")
+    DButils.execQuery("SELECT user_id FROM Users")
       .then((users) => {
         if (users.find((x) => x.user_id === req.session.user_id)) {
           req.user_id = req.session.user_id;
@@ -21,6 +21,10 @@ router.use(async function (req, res, next) {
     res.sendStatus(401);
   }
 });
+
+
+// -------------------------------------------------------- Favorite Player Functions-----------------------------------
+
 
 /**
  * This path gets body with playerId and save this player in the favorites list of the logged-in user
@@ -52,5 +56,37 @@ router.get("/favoritePlayers", async (req, res, next) => {
     next(error);
   }
 });
+
+
+
+
+// -------------------------------------------------------- Favorite Team Functions-----------------------------------
+
+router.post("/favoriteTeams", async (req, res, next) => {
+  try {
+    const user_id = req.session.user_id;
+    const player_id = req.body.teamId;
+    await users_utils.markTeamAsFavorite(user_id, team_id);
+    res.status(201).send("The team successfully saved as favorite");
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/favoriteTeams", async (req, res, next) => {
+  try {
+    const user_id = req.session.user_id;
+    let favorite_players = {};
+    const team_ids = await users_utils.getFavoriteTeams(user_id);
+    let team_ids_array = [];
+    team_ids.map((element) => team_ids_array.push(element.team_id)); //extracting the teams id ids into array
+    const results = await players_utils.getteamsInfo(team_ids_array);
+    res.status(200).send(results);
+  } catch (error) {
+    next(error);
+  }
+});
+
+
 
 module.exports = router;

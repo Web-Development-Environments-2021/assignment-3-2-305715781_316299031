@@ -1,28 +1,31 @@
+---
 openapi: 3.0.0
 info:
   title: api
   description: API for  project
   version: 1.0.0
+servers:
+- url: /
 tags:
-  - name: Users
-  - name: Auth
-  - name: League
-  - name: Players
-  - name: Teams
-  - name: Games
+- name: Users
+- name: Auth
+- name: League
+- name: Players
+- name: Teams
+- name: Games
 paths:
   /Register:
     post:
       tags:
-        - Auth
+      - Auth
       summary: Add new user
       description: A new user from the client is added to the server
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              $ref: '#/components/schemas/User'
+        required: true
       responses:
         "201":
           description: A new user has been added
@@ -31,41 +34,33 @@ paths:
   /Login:
     post:
       tags:
-        - Auth
+      - Auth
       summary: Login an exist user
       description: An exist user login to the system
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/LoginScheme"
+              $ref: '#/components/schemas/LoginScheme'
+        required: true
       responses:
         "200":
-          description: >
-            User was found in the DB and authenitcated successfully.
-            The session ID is returned in a cookie named `session`. 
-            You should include this cookie in subsequent requests
-          # headers:
-          #   Set-Cookie:
-          #     schema:
-          #       type: string
-          #       example: session=87s97sdhgf279293f8w0e9
-            # Note that the Set-Cookie header and securitySchemes are not connected in any way, and the Set-Header definition is for documentation purposes only.
+          description: |
+            User was found in the DB and authenitcated successfully. The session ID is returned in a cookie named `session`.  You should include this cookie in subsequent requests
         "401":
           description: Authentication failed
   /logout:
     post:
       tags:
-        - Auth
+      - Auth
       summary: logout a user from the system and delete his cookie
       responses:
         "200":
-          description: "the user has ben successfully logged out"
+          description: the user has ben successfully logged out
   /league/getDetails:
     get:
       tags:
-        - league
+      - league
       summary: Return the details about the current league
       responses:
         "200":
@@ -75,16 +70,15 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/League"
+                  $ref: '#/components/schemas/League'
         "400":
           description: wrong input parameters
   /users/favoritePlayers:
     get:
       tags:
-        - Users
-        - Players
+      - Users
+      - Players
       summary: Return the favorite players that were saved by user
-      parameters:
       responses:
         "200":
           description: data about the user's favorites players returned
@@ -93,49 +87,78 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/PlayerPreview"
+                  $ref: '#/components/schemas/PlayerPreview'
         "401":
           description: user is not authorized
     post:
-      summary: save player in the favorites list of a user
       tags:
-        - Users
-        - Players
+      - Users
+      - Players
+      summary: save player in the favorites list of a user
       requestBody:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                playerId:
-                  type: string
-                  description: player's id which the user saved
-                  example: 85
+              $ref: '#/components/schemas/body'
       responses:
         "201":
           description: The player successfully saved as favorite
         "401":
           description: user is not authorized
+  /users/favoriteTeams:
+    get:
+      tags:
+      - Users
+      - Teams
+      summary: Return the favorite team that were saved by user
+      responses:
+        "200":
+          description: data about the user's favorites teams returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Team'
+        "401":
+          description: user is not authorized
+    post:
+      tags:
+      - Users
+      - Teams
+      summary: save team in the favorites list of a user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_1'
+      responses:
+        "201":
+          description: The team successfully saved as favorite
+        "401":
+          description: user is not authorized
   /teams/teamFullDetails/{teamId}:
     get:
+      tags:
+      - Teams
       summary: get full deatils about a team
       description: useful for team page
-      tags:
-        - Teams
       parameters:
-        - in: path
-          name: teamId
-          description: team's id
-          required: true
-          schema:
-            type: integer
+      - name: teamId
+        in: path
+        description: team's id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
       responses:
         "200":
           description: data about the team
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Team"
+                $ref: '#/components/schemas/Team'
         "404":
           description: teamId is not exists
 components:
@@ -165,9 +188,7 @@ components:
           maxLength: 10
           minLength: 5
           type: string
-          description:
-            password conatins between 5 to 10 chars, at least one of them
-            is a number and a special char
+          description: password conatins between 5 to 10 chars, at least one of them is a number and a special char
           format: password
           example: lady@56
         email:
@@ -185,17 +206,17 @@ components:
       type: object
       properties:
         username:
-          type: string
-          minLength: 3
           maxLength: 8
+          minLength: 3
+          type: string
           description: username conatins letters only
           example: naorbe
         password:
-          type: string
-          minLength: 5
           maxLength: 10
-          format: password
+          minLength: 5
+          type: string
           description: password conatins at least one number and one special char
+          format: password
           example: naor@55
     League:
       type: object
@@ -207,7 +228,7 @@ components:
         current_season_name:
           type: string
           description: current season name
-          example: "2020/2021"
+          example: 2020/2021
         current_stage_name:
           type: string
           description: current stage name
@@ -242,5 +263,18 @@ components:
         players:
           type: array
           items:
-            type: object
-            $ref: "#/components/schemas/PlayerPreview"
+            $ref: '#/components/schemas/PlayerPreview'
+    body:
+      type: object
+      properties:
+        playerId:
+          type: string
+          description: player's id which the user saved
+          example: "85"
+    body_1:
+      type: object
+      properties:
+        playerId:
+          type: string
+          description: team's id which the user saved
+          example: "85"
