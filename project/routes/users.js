@@ -65,7 +65,7 @@ router.get("/favoritePlayers", async (req, res, next) => {
 router.post("/favoriteTeams", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
-    const team_id = req.body.teamId;
+    const team_id = req.body.team_id;
     await users_utils.markTeamAsFavorite(user_id, team_id);
     res.status(201).send("The team successfully saved as favorite");
   } catch (error) {

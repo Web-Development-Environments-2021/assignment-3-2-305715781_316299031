@@ -1,280 +1,396 @@
 ---
 openapi: 3.0.0
 info:
-  title: api
-  description: API for  project
+  title: Simple Inventory API
+  description: This is a simple API
+  contact:
+    email: you@your-company.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
-servers:
-- url: /
 tags:
-- name: Users
-- name: Auth
-- name: League
-- name: Players
-- name: Teams
-- name: Games
+- name: users
+  description: All user function
 paths:
-  /Register:
+  /register/:
     post:
       tags:
       - Auth
-      summary: Add new user
-      description: A new user from the client is added to the server
+      summary: This is the register, A new user from th client is added to the server
+      description: A JSON object contains all the detalis about the new user
       requestBody:
+        description: Inventory item to add
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/register'
         required: true
       responses:
         "201":
           description: A new user has been added
         "400":
-          description: wrong input parameters
-  /Login:
+          description: bad input parameter
+  /login/:
     post:
       tags:
       - Auth
-      summary: Login an exist user
-      description: An exist user login to the system
+      summary: This is the login, a user trining to connect
+      description: A JSON object contains all the detalis about the new user
       requestBody:
+        description: Inventory item to add
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginScheme'
+              $ref: '#/components/schemas/login'
         required: true
       responses:
         "200":
-          description: |
-            User was found in the DB and authenitcated successfully. The session ID is returned in a cookie named `session`.  You should include this cookie in subsequent requests
+          description: The  user has been login successfully
         "401":
-          description: Authentication failed
-  /logout:
+          description: bad input parameter
+  /logout/:
     post:
       tags:
       - Auth
-      summary: logout a user from the system and delete his cookie
+      description: This is the logOut
       responses:
         "200":
-          description: the user has ben successfully logged out
-  /league/getDetails:
+          description: logout succeeded
+          headers:
+            delete-Cookie:
+              style: simple
+              explode: false
+              schema:
+                type: string
+                example: ""
+  /users/favoritePlayers/:
     get:
       tags:
-      - league
-      summary: Return the details about the current league
-      responses:
-        "200":
-          description: data about the current league returned
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/League'
-        "400":
-          description: wrong input parameters
-  /users/favoritePlayers:
-    get:
-      tags:
-      - Users
-      - Players
-      summary: Return the favorite players that were saved by user
-      responses:
-        "200":
-          description: data about the user's favorites players returned
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PlayerPreview'
-        "401":
-          description: user is not authorized
-    post:
-      tags:
-      - Users
-      - Players
-      summary: save player in the favorites list of a user
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/body'
+      - users
+      summary: my favorite players
+      description: By passing in the appropriate options, you can get your favorite players that store in the DB.
       responses:
         "201":
-          description: The player successfully saved as favorite
-        "401":
-          description: user is not authorized
-  /users/favoriteTeams:
-    get:
-      tags:
-      - Users
-      - Teams
-      summary: Return the favorite team that were saved by user
-      responses:
-        "200":
-          description: data about the user's favorites teams returned
+          description: get my favorite successfuly
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Team'
-        "401":
-          description: user is not authorized
-    post:
-      tags:
-      - Users
-      - Teams
-      summary: save team in the favorites list of a user
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/body_1'
-      responses:
-        "201":
-          description: The team successfully saved as favorite
-        "401":
-          description: user is not authorized
-  /teams/teamFullDetails/{teamId}:
-    get:
-      tags:
-      - Teams
-      summary: get full deatils about a team
-      description: useful for team page
-      parameters:
-      - name: teamId
-        in: path
-        description: team's id
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-      responses:
-        "200":
-          description: data about the team
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Team'
+                  $ref: '#/components/schemas/favoritPlayer'
         "404":
-          description: teamId is not exists
+          description: my favorites not found
+    post:
+      tags:
+      - users
+      description: add the player to my favorite
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/favoritPlayer'
+      responses:
+        "200":
+          description: A new player has been iserted to favorites successfuly
+        "401":
+          description: already in favorites
+        "404":
+          description: bad input parameter
+  /users/favoriteTeams/:
+    get:
+      tags:
+      - users
+      summary: my favorite teams
+      description: By passing in the appropriate options, you can get your favorite teams that store in the DB.
+      responses:
+        "201":
+          description: get my favorite successfuly
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/favoritTeam'
+        "404":
+          description: my favorites not found
+    post:
+      tags:
+      - users
+      description: add the team to my favorite
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/favoritTeam'
+      responses:
+        "200":
+          description: A new team has been iserted to favorites successfuly
+        "401":
+          description: already in favorites
+        "404":
+          description: bad input parameter
+  /users/favoriteGames/:
+    get:
+      tags:
+      - users
+      summary: my favorite games
+      description: By passing in the appropriate options, you can get your favorite games that store in the DB.
+      responses:
+        "201":
+          description: get my favorite successfuly
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/favoritGame'
+        "404":
+          description: my favorites not found
+    post:
+      tags:
+      - users
+      description: add the game to my favorite
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/favoritGame'
+      responses:
+        "200":
+          description: A new game has been iserted to favorites successfuly
+        "401":
+          description: already in favorites
+        "404":
+          description: bad input parameter
+  /users/Search/team/:id/:
+    get:
+      tags:
+      - guest
+      summary: search team by id
+      description: A JSON object contains all the detalis about the team
+      responses:
+        "200":
+          description: Succesfully found the team
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchTeam'
+        "401":
+          description: bad input parameter
+  /users/search/playerCoach/:id/:
+    get:
+      tags:
+      - guest
+      summary: search player by id
+      description: A JSON object contains all the detalis about the player
+      responses:
+        "200":
+          description: Succesfully found the player
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/favoritPlayer'
+        "401":
+          description: bad input parameter
+  /admin/addGame/:
+    post:
+      tags:
+      - admin
+      summary: add game to table
+      description: A JSON object contains all the detalis about the game
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/favoritGame'
+        required: true
+      responses:
+        "200":
+          description: A new game has been iserted to favorites successfuly
+        "401":
+          description: already in favorites
+        "404":
+          description: bad input parameter
+  /admin/eventSchedule/:id/:
+    post:
+      tags:
+      - admin
+      summary: eventSchedule
+      description: A JSON object contains all the detalis about the events from a game
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/eventSchedule'
+        required: true
+      responses:
+        "200":
+          description: A new eventSchedule to game() has been iserted to the web
+        "404":
+          description: bad input parameter
+  /admin/resultGame/:id/:
+    post:
+      tags:
+      - admin
+      summary: add result the game
+      description: A JSON object contains all the detalis about the result of the game
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/resultGame'
+        required: true
+      responses:
+        "200":
+          description: A new result to game.id=id  has been inserted
+        "404":
+          description: bad input parameter
 components:
   schemas:
-    User:
+    register:
       type: object
       properties:
         username:
           maxLength: 8
           minLength: 3
           type: string
-          description: username conatins between 3 to 8 letters only
-          example: ladygaga
+          description: username contains between 3 to 8 letters only
+          example: NicoleKenig
         firstname:
           type: string
-          description: user's first name
-          example: Stefani
+          description: the user first name
+          example: Nicole
         lastname:
           type: string
-          description: user's last name
-          example: Germanotta
+          description: the user last name
+          example: Kenig
         country:
           type: string
-          description: user's country
-          example: USA
+          description: the user country
+          example: Israel
         password:
           maxLength: 10
           minLength: 5
           type: string
-          description: password conatins between 5 to 10 chars, at least one of them is a number and a special char
+          description: |
+            password contains between 5 to 10 chars, at least on of them is a number and a special char
           format: password
-          example: lady@56
-        email:
-          pattern: email
+          example: joanne@26
+        confirmation password:
+          maxLength: 10
+          minLength: 5
           type: string
-          description: user's email
+          description: |
+            password contains between 5 to 10 chars, at least on of them is a number and a special char
+          format: password
+          example: joanne@26
+        email:
+          type: string
+          description: the user email
+          format: email
           example: ladygaga@gmail.com
         image-url:
-          pattern: URL
           type: string
           description: URL for the user's image
-          example: https://cloudinary.com/
-      description: Model containing user info
-    LoginScheme:
+          format: URL
+          example: https://cloudinary.com/ladygaga
+    login:
       type: object
       properties:
         username:
           maxLength: 8
           minLength: 3
           type: string
-          description: username conatins letters only
-          example: naorbe
+          description: username contains between 3 to 8 letters only
+          example: naor1
         password:
           maxLength: 10
           minLength: 5
           type: string
-          description: password conatins at least one number and one special char
+          description: |
+            password contains between 5 to 10 chars, at least on of them is a number and a special char
           format: password
-          example: naor@55
-    League:
+          example: 123456
+    favoritPlayer:
       type: object
       properties:
-        league_name:
-          type: string
-          description: league name
-          example: Superliga
-        current_season_name:
-          type: string
-          description: current season name
-          example: 2020/2021
-        current_stage_name:
-          type: string
-          description: current stage name
-          example: Championship Round
-    PlayerPreview:
-      type: object
-      properties:
-        name:
-          type: string
-          description: player's name
-          example: Sten Michael Grytebust
-        image:
-          type: string
-          description: player's image
-          format: URL
-          example: https://cdn.sportmonks.com/images/soccer/players/11/84587.png
-        position:
+        player_id:
           type: integer
-          description: player's position in team
-          example: 1
-        team_name:
+          description: id of player
+          example: 90
+    favoritTeam:
+      type: object
+      properties:
+        team_id:
+          type: int
+          description: username contains between 3 to 8 letters only
+          example: NicoleKenig
+    favoritGame:
+      type: object
+      properties:
+        date:
+          maxLength: 6
+          minLength: 6
           type: string
-          description: player's team name
-          example: København
-    Team:
+          description: game date
+          example: 09/05/21
+        hour:
+          maxLength: 4
+          minLength: 4
+          type: string
+          description: when the game start
+          example: "960"
+        homeTeam:
+          type: string
+          description: home team mane
+          example: Macabi Tel Aviv
+        awayTeam:
+          type: string
+          description: away team mane
+          example: Macabi Haifa
+        fild:
+          type: string
+          description: fild mane
+          example: Blomfiled
+        result:
+          type: string
+          example: "243"
+    SearchTeam:
       type: object
       properties:
         name:
           type: string
-          description: team name
-          example: København
-        players:
-          type: array
-          items:
-            $ref: '#/components/schemas/PlayerPreview'
-    body:
+          description: Team name
+          example: Macabi Netanya
+        image-url:
+          type: string
+          description: URL for the logo Team
+          format: URL
+          example: https://cloudinary.com/ladygaga
+    eventSchedule:
       type: object
       properties:
-        playerId:
+        data:
           type: string
-          description: player's id which the user saved
-          example: "85"
-    body_1:
+          description: which event happend
+          example: goal/ red/yellow tickect / injury / change player/ offense
+        hour:
+          type: integer
+          description: when its happend in hour
+        minute:
+          type: integer
+          description: when its happend in minute
+        EventDescription:
+          type: string
+          description: what happend in the event
+          example: Jovany rosso put goal at by passs he got from....
+    resultGame:
       type: object
       properties:
-        teamId:
-          type: string
-          description: team's id which the user saved
-          example: "85"
+        homeTeamScore:
+          type: integer
+          example: 4
+        awayTeamScore:
+          type: integer
+          example: 5
