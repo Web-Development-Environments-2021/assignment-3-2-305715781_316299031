@@ -194,20 +194,29 @@ paths:
           description: Succesfully found the team
         "401":
           description: bad input parameter
-  /guest/search/player/:
+  /guest/search/player/{searchname}:
     get:
       tags:
       - Guest
       - Players
       summary: search player by name
       description: A JSON object contains all the detalis about the player
+      parameters:
+      - name: searchname
+        in: path
+        description: search by name
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       responses:
         "200":
           description: Succesfully found the player
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SearchPlayer'
+                $ref: '#/components/schemas/PlayerPreview'
         "401":
           description: bad input parameter
   /admin/addGame/:
