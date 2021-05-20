@@ -53,46 +53,55 @@ exports.searchTeamByName = searchTeamByName;
 
 
 //-----------------------------Functions Search Player-------------------------------------------------------------
-
+function extractRelevantPlayerData2(players_info) {
+    return players_info.map((player_info) => {
+      const { fullname, image_path, position_id } = player_info;
+      const { name } = player_info.team.data;
+      return {
+        name: fullname,
+        image: image_path,
+        position: position_id,
+        team_name: name,
+      };
+    });
+  }
 // return all players start with the name and they are in the league
 
 async function getPlayers(search_name){
-    let players;
-    players = await axios.get(`${api_domain}/players/${search_name}`)
-    
+    let players =await axios.get(`${api_domain}/players/search/${search_name}`, {
+    params: {
+        api_token: process.env.api_token,
+        include:"team.current_season_id",
+     },
+    });
     //get all teams in the league
-    const teamsIDS = await getTeamsBySeason(SEASON_ID);
+  //  let teamsIDS = await getTeamsBySeason(SEASON_ID);
+    let players_data = players.data.data;
     let relavent_players=[];
-    
-    players.map((id) => {
-        if(  players.includes(id.data.teame_id,0)){
-                relavent_players.push.id.data;}
-
-         }
-    )
-return relavent_players;
-}
-
-    
-    
-    //return all players that  names start search_name
-    
-    async function extractRelevantTeamName(player_ids, search_name){
-           // all teams in the league
-        const teamsIDS = await getTeamsBySeason(SEASON_ID);
-
-        for(i=0;i<player_ids.length;i++){
-            player_info[i].map((info) => 
+//    let pr =await Promise.all([players,teamsIDS]);
+  //   players = pr[0];
+  //   teamIDS = pr[1];
+        players_data.map((id) => {
+        try{    
+            let session = id.team.data.current_season_id;
+        if( session === SEASON_ID)
             {
-                if(info["name"].startsWith(search_name,0)){
-                    relavent_players_by_name.push(info);
-                }
-             }
-        );
-    }
-    return relavent_players_by_name;
-}
+                    relavent_players.push(id);}
+            }
+        catch(err){
+            //do nathing
+        };  
+    }  
+    )
     
+    // pass over all the ids and returen relvant data for each one
+    let player_info = extractRelevantPlayerData2(relavent_players);
+
+return player_info;
+}
+
+
+  
     // param - searchname - the value we are looking by him
     // return - all theams that start with this value
     
@@ -104,4 +113,4 @@ return relavent_players;
     
     exports.searchTeamByName = searchTeamByName;
 
-    exports.searchPlayerByName = searchPlayerByName;
+    exports.getPlayers = getPlayers;

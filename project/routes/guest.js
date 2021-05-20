@@ -25,7 +25,7 @@ router.get("/Search/team/:searchname", async (req, res, next) => {
   router.get("/Search/player/:searchname", async (req, res, next) => {
     let team_details = [];
     try {
-      const player_by_name = await search_utils.searchPlayerByName(
+      const player_by_name = await search_utils.getPlayers(
         req.params.searchname 
       );
       //we should keep implementing team page.....
