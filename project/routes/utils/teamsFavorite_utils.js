@@ -3,7 +3,7 @@ const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 // const TEAM_ID = "85";
 
 
-
+// return relvant detail about all teams in id array
 
 async function TeamInfo(team_ids_array){
     let TeamInfo=[];

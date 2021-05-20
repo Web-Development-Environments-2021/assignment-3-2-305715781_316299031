@@ -10,7 +10,11 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 tags:
-- name: users
+- name: Users
+- name: Teams
+- name: Players
+- name: Games
+- name: Auth
   description: All user function
 paths:
   /register/:
@@ -67,7 +71,8 @@ paths:
   /users/favoritePlayers/:
     get:
       tags:
-      - users
+      - User
+      - Players
       summary: my favorite players
       description: By passing in the appropriate options, you can get your favorite players that store in the DB.
       responses:
@@ -83,7 +88,8 @@ paths:
           description: my favorites not found
     post:
       tags:
-      - users
+      - Users
+      - Players
       description: add the player to my favorite
       requestBody:
         content:
@@ -100,7 +106,8 @@ paths:
   /users/favoriteTeams/:
     get:
       tags:
-      - users
+      - Users
+      - Teams
       summary: my favorite teams
       description: By passing in the appropriate options, you can get your favorite teams that store in the DB.
       responses:
@@ -116,7 +123,8 @@ paths:
           description: my favorites not found
     post:
       tags:
-      - users
+      - Users
+      - Teams
       description: add the team to my favorite
       requestBody:
         content:
@@ -133,7 +141,8 @@ paths:
   /users/favoriteGames/:
     get:
       tags:
-      - users
+      - Users
+      - Games
       summary: my favorite games
       description: By passing in the appropriate options, you can get your favorite games that store in the DB.
       responses:
@@ -149,7 +158,8 @@ paths:
           description: my favorites not found
     post:
       tags:
-      - users
+      - Users
+      - Games
       description: add the game to my favorite
       requestBody:
         content:
@@ -163,26 +173,33 @@ paths:
           description: already in favorites
         "404":
           description: bad input parameter
-  /users/Search/team/:id/:
+  /guest/Search/team/{searchname}:
     get:
       tags:
-      - guest
-      summary: search team by id
+      - Guest
+      - Teams
+      summary: search team by name
       description: A JSON object contains all the detalis about the team
+      parameters:
+      - name: searchname
+        in: path
+        description: search by name
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       responses:
         "200":
           description: Succesfully found the team
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SearchTeam'
         "401":
           description: bad input parameter
-  /users/search/playerCoach/:id/:
+  /guest/search/player/:
     get:
       tags:
-      - guest
-      summary: search player by id
+      - Guest
+      - Players
+      summary: search player by name
       description: A JSON object contains all the detalis about the player
       responses:
         "200":
@@ -190,7 +207,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/favoritPlayer'
+                $ref: '#/components/schemas/SearchPlayer'
         "401":
           description: bad input parameter
   /admin/addGame/:
@@ -212,7 +229,7 @@ paths:
           description: already in favorites
         "404":
           description: bad input parameter
-  /admin/eventSchedule/:id/:
+  /admin/eventSchedule/:
     post:
       tags:
       - admin
@@ -246,6 +263,30 @@ paths:
           description: A new result to game.id=id  has been inserted
         "404":
           description: bad input parameter
+  /teams/teamFullDetails/{teamId}:
+    get:
+      tags:
+      - Teams
+      summary: get full deatils about a team
+      description: useful for team page
+      parameters:
+      - name: teamId
+        in: path
+        description: team's id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: data about the team
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        "404":
+          description: teamId is not exists
 components:
   schemas:
     register:
@@ -311,21 +352,21 @@ components:
           description: |
             password contains between 5 to 10 chars, at least on of them is a number and a special char
           format: password
-          example: 123456
+          example: "123456"
     favoritPlayer:
       type: object
       properties:
         player_id:
           type: integer
-          description: id of player
+          description: id of the player
           example: 90
     favoritTeam:
       type: object
       properties:
         team_id:
-          type: int
-          description: username contains between 3 to 8 letters only
-          example: NicoleKenig
+          type: integer
+          description: id of the team
+          example: 85
     favoritGame:
       type: object
       properties:
@@ -363,11 +404,13 @@ components:
           type: string
           description: Team name
           example: Macabi Netanya
-        image-url:
+    SearchPlayer:
+      type: object
+      properties:
+        name:
           type: string
-          description: URL for the logo Team
-          format: URL
-          example: https://cloudinary.com/ladygaga
+          description: Player fullname/lastname/firstname
+          example: itzik zohar
     eventSchedule:
       type: object
       properties:
@@ -394,3 +437,34 @@ components:
         awayTeamScore:
           type: integer
           example: 5
+    PlayerPreview:
+      type: object
+      properties:
+        name:
+          type: string
+          description: player's name
+          example: Sten Michael Grytebust
+        image:
+          type: string
+          description: player's image
+          format: URL
+          example: https://cdn.sportmonks.com/images/soccer/players/11/84587.png
+        position:
+          type: integer
+          description: player's position in team
+          example: 1
+        team_name:
+          type: string
+          description: player's team name
+          example: København
+    Team:
+      type: object
+      properties:
+        name:
+          type: string
+          description: team name
+          example: København
+        players:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerPreview'
