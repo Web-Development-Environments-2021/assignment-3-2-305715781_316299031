@@ -42,12 +42,10 @@ router.post("/addNewGame", async(req, res, next) => {
    }   
     //session is allways the current one
     // dont need to check if the tema exsist it's a pre-condition
-    const home_team_name = req.body.homeTeam;
-    const away_team_name = req.body.awayTeam;
+    const localteam = req.body.localteam;
+    const vistoreteam = req.body.vistoreteam;
     const date = req.body.date;
-    const location = req.body.location;
-    const season = req.body.season;
-    const league = req.body.league;
+    const fild = req.body.fild;
     const mainJudge = req.body.mainJudge;
     const judge1 = req.body.judge1;
     const judge2 = req.body.judge2;
@@ -55,7 +53,7 @@ router.post("/addNewGame", async(req, res, next) => {
 
     //check the teams can play in this date
     const gameDB= await DButils.execQuery("SELECT * FROM dbo.Games");
-    if (gameDB.find((x) =>     x.data === date  && x.localteam == home_team_name && x.vistoreteam == away_team_name))
+    if (gameDB.find((x) =>     x.data === date  && x.localteam == localteam && x.vistoreteam == vistoreteam))
       throw { status: 409, message: "The teams can't play on that date, it's taken" };
 
     // check the judges exsist
@@ -112,7 +110,7 @@ router.post("/addNewGame", async(req, res, next) => {
     // add the new game to Games table
     await DButils.execQuery(
       `INSERT INTO dbo.Games (localteam, vistoreteam,date, fild ,mainJudge,judge1,judge2,judge3) VALUES 
-      ('${home_team_name}','${away_team_name}','${date}', '${location}','${mainJudge}','${judge1}','${judge2}','${judge3}')`
+      ('${localteam}','${vistoreteam}','${date}', '${fild}','${mainJudge}','${judge1}','${judge2}','${judge3}')`
     );
   
     res.status(201).send("Game Added");
