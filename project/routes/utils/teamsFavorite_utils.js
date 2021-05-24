@@ -24,6 +24,7 @@ async function TeamInfo(team_ids_array){
 
 
 
+// extract details for each team
 function extraactRelvantTeamData(teams_info){
   return teams_info.map((team) => {
       let {name,logo_path} = team.data.data;
@@ -41,9 +42,9 @@ function extraactRelvantTeamData(teams_info){
   }
 
 
+  // return array of all teams in the favorit and a few details
   async function showFavoriteTeams(team_ids) {
     let teams_info =await TeamInfo(team_ids);
-    console.log(teams_info)
     return teams_info;
   }
 

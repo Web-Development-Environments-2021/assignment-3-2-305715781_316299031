@@ -219,6 +219,31 @@ paths:
                 $ref: '#/components/schemas/PlayerPreview'
         "401":
           description: bad input parameter
+  /guest/search/player/filter/{searchfilter}:
+    get:
+      tags:
+      - Guest
+      - Players
+      summary: search player by name and filter it
+      description: A JSON object contains all the detalis about the player
+      parameters:
+      - name: searchfilter
+        in: path
+        description: search by name
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/filterplayer'
+      responses:
+        "200":
+          description: Succesfully found the player
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayerPreview'
+        "401":
+          description: bad input parameter
   /admin/addGame/:
     post:
       tags:
@@ -379,23 +404,15 @@ components:
     favoritGame:
       type: object
       properties:
-        date:
-          maxLength: 6
-          minLength: 6
+        date-time:
           type: string
-          description: game date
-          example: 09/05/21
-        hour:
-          maxLength: 4
-          minLength: 4
-          type: string
-          description: when the game start
-          example: "960"
-        homeTeam:
+          description: date and time
+          example: 2017-07-21T17:32:28.000+0000
+        localteam:
           type: string
           description: home team mane
           example: Macabi Tel Aviv
-        awayTeam:
+        visitoreteam:
           type: string
           description: away team mane
           example: Macabi Haifa
@@ -405,7 +422,11 @@ components:
           example: Blomfiled
         result:
           type: string
-          example: "243"
+          example: 2:3
+        events:
+          type: object
+          description: events occur in game
+          example: 2017-07-21T17:32:28Z goal ronaldo
     SearchTeam:
       type: object
       properties:
@@ -477,3 +498,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PlayerPreview'
+    filterplayer:
+      type: object
+      properties:
+        name:
+          type: string
+          description: player name
+          example: haim revivo
+        position:
+          type: integer
+          description: player postion
+          example: 1
+        teamname:
+          type: string
+          description: team name
+          example: tel aviv

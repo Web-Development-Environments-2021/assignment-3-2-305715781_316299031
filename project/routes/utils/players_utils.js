@@ -44,6 +44,8 @@ function extractRelevantPlayerData(players_info) {
     };
   });
 }
+ 
+// return all data about players in the team_id
 
 async function getPlayersByTeam(team_id) {
   let player_ids_list = await getPlayerIdsByTeam(team_id);
@@ -51,6 +53,71 @@ async function getPlayersByTeam(team_id) {
   return players_info;
 }
 
+// return Full page detail for player
+
+function extractFullPlayerData(players_info) {
+  return players_info.map((player_info) => {
+    const { common_name, nationality, birthdate,birthcountry,height,weight } = player_info.data.data;
+    return {
+      CommonName: common_name,
+      nationality: nationality,
+      birthdate: birthdate,
+      birthcountry: birthcountry,
+      height:height,
+      weight:weight,
+    };
+  });
+}
+
+//--------------------------------------------------------------------Search Filters-------------------------------------
+
+//by position
+
+function filterByPositonPlayers(players,position_id){
+  let playersIdByPositons =[];
+  players.map((player) => {
+      if(player.position_id == position_id){
+        const { fullname, image_path, position_id }=player;
+        const { name } = player.team.data;
+          playersIdByPositons.push(
+            {
+            name: fullname,
+            image: image_path,
+            position: position_id,
+            team_name: name,
+            }
+          )
+      }
+    });
+  return playersIdByPositons;
+}
+
+
+// by team
+
+function filterByTeamNamePlayers(players,teamname){
+  let playersIdByTeamName =[];
+  players.map((player) => {
+      if(player.team.data.name == teamname){
+        const { fullname, image_path, position_id }=player;
+        const { name } = player.team.data;
+        playersIdByTeamName.push(
+            {
+            name: fullname,
+            image: image_path,
+            position: position_id,
+            team_name: name,
+            }
+          )
+      }
+    });
+  return playersIdByTeamName;
+}
+
+//-------------------------------------------------------------------------------------------------------------//-------------------------------------------------------------------------------------------------------------
+
+exports.filterByPositonPlayers = filterByPositonPlayers;
 exports.getPlayerIdsByTeam = getPlayerIdsByTeam;
 exports.getPlayersByTeam = getPlayersByTeam;
 exports.getPlayersInfo = getPlayersInfo;
+exports.filterByTeamNamePlayers = filterByTeamNamePlayers;

@@ -22,7 +22,7 @@ return teams_id_array;
 }
 
 
-//return all teams that theire names include search_name
+//return all teams that theire names include search_name with the name and logo 
 
 async function extractRelevantTeamName(teams_id_array, search_name){
     let teams_info = [];
@@ -53,27 +53,43 @@ exports.searchTeamByName = searchTeamByName;
 
 
 //-----------------------------Functions Search Player-------------------------------------------------------------
-function extractRelevantPlayerData2(players_info) {
-    return players_info.map((player_info) => {
-      const { fullname, image_path, position_id } = player_info;
-      const { name } = player_info.team.data;
-      return {
-        name: fullname,
-        image: image_path,
-        position: position_id,
-        team_name: name,
-      };
-    });
-  }
+
+
+
 // return all players start with the name and they are in the league
 
 async function getPlayers(search_name){
-    let players =await axios.get(`${api_domain}/players/search/${search_name}`, {
-    params: {
-        api_token: process.env.api_token,
-        include:"team.current_season_id",
-     },
-    });
+
+    let array_search=search_name.split(",");
+    let name;
+    let position;
+    let teamname;
+    let players_info;
+    let players
+    if(array_search.length > 1){
+         name= array_search[1];
+         position = array_search[3];
+         teamname = array_search[5];
+    }
+
+    if(array_search.length ==1 )    {
+         players =await axios.get(`${api_domain}/players/search/${search_name}`, {
+        params: {
+            api_token: process.env.api_token,
+            include:"team.current_season_id",
+        },
+        });
+    }
+    else{
+         filterFlag=true;
+         players =await axios.get(`${api_domain}/players/search/${name}`, {
+        params: {
+            api_token: process.env.api_token,
+            include:"position",
+            include:"team"
+        },
+        });
+    }
     //get all teams in the league
   //  let teamsIDS = await getTeamsBySeason(SEASON_ID);
     let players_data = players.data.data;
@@ -91,19 +107,45 @@ async function getPlayers(search_name){
         catch(err){
             //do nathing
         };  
-    }  
+      }  
     )
     
-    // pass over all the ids and returen relvant data for each one
-    let player_info = extractRelevantPlayerData2(relavent_players);
 
-return player_info;
+    // pass over all the ids and returen relvant data for each one
+    if(filterFlag==false){ 
+            players_info = extractRelevantPlayerData2(relavent_players);
+        }  
+    
+    else{
+        if(position != 0 ){
+             players_info= players_utils.filterByPositonPlayers(relavent_players,position);
+        }
+        if(teamname !=""){
+             players_info= players_utils.filterByTeamNamePlayers(relavent_players,teamname);
+        }
+    }
+
+
+    
+return players_info;
 }
 
-
+// help function to extract the right details
+function extractRelevantPlayerData2(players_info) {
+    return players_info.map((player_info) => {
+      const { fullname, image_path, position_id } = player_info;
+      const { name } = player_info.team.data;
+      return {
+        name: fullname,
+        image: image_path,
+        position: position_id,
+        team_name: name,
+      };
+    });
+  }
   
     // param - searchname - the value we are looking by him
-    // return - all theams that start with this value
+    // return -array of  all players that start with this value
     
     async function searchPlayerByName(search_name){
         let player_id_array = await getPlayers(search_name);
@@ -111,6 +153,20 @@ return player_info;
         return player_id_array;
     }
     
+
+
+
+
+
+
     exports.searchTeamByName = searchTeamByName;
 
     exports.getPlayers = getPlayers;
+
+
+
+
+
+
+
+    //==============================================Search Function Games=================================
