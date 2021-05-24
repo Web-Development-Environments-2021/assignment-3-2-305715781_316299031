@@ -116,6 +116,7 @@ function filterByTeamNamePlayers(players,teamname){
 
 //-------------------------------------------------------------------------------------------------------------//-------------------------------------------------------------------------------------------------------------
 
+console.log("gfd");
 exports.filterByPositonPlayers = filterByPositonPlayers;
 exports.getPlayerIdsByTeam = getPlayerIdsByTeam;
 exports.getPlayersByTeam = getPlayersByTeam;
