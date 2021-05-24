@@ -52,7 +52,7 @@ router.post("/addNewGame", async(req, res, next) => {
     const judge3 = req.body.judge3
 
     //check the teams can play in this date
-    const gameDB= await DButils.execQuery("SELECT * FROM dbo.Games");
+    const gameDB= await DButils.execQuery("SELECT * FROM dbo.GamesTable");
     if (gameDB.find((x) =>     x.data === date  && x.localteam == localteam && x.vistoreteam == vistoreteam))
       throw { status: 409, message: "The teams can't play on that date, it's taken" };
 
@@ -109,7 +109,7 @@ router.post("/addNewGame", async(req, res, next) => {
 
     // add the new game to Games table
     await DButils.execQuery(
-      `INSERT INTO dbo.Games (localteam, vistoreteam,date, fild ,mainJudge,judge1,judge2,judge3) VALUES 
+      `INSERT INTO dbo.GamesTable (localteam, vistoreteam,date, fild ,mainJudge,judge1,judge2,judge3) VALUES 
       ('${localteam}','${vistoreteam}','${date}', '${fild}','${mainJudge}','${judge1}','${judge2}','${judge3}')`
     );
   
@@ -133,3 +133,4 @@ router.post("/AddResult", async (req, res, next) =>
     next(error);
     }
 });
+g

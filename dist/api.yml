@@ -245,25 +245,7 @@ paths:
                 $ref: '#/components/schemas/PlayerPreview'
         "401":
           description: bad input parameter
-  /admin/addGame/:
-    post:
-      tags:
-      - admin
-      summary: add game to table
-      description: A JSON object contains all the detalis about the game
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/favoritGame'
-        required: true
-      responses:
-        "200":
-          description: A new game has been iserted to favorites successfuly
-        "401":
-          description: already in favorites
-        "404":
-          description: bad input parameter
+  
   /admin/eventSchedule/:
     post:
       tags:
@@ -462,6 +444,10 @@ components:
     eventSchedule:
       type: object
       properties:
+        game_id:
+          type: integer
+          description: An event belongs to the game
+          example: 234565
         data:
           type: string
           description: which event happend
