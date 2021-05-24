@@ -120,6 +120,16 @@ router.post("/addNewGame", async(req, res, next) => {
   }
 });
 
-
-
-module.exports = router;
+// add result to game
+router.post("/AddResult", async (req, res, next) =>
+{
+  try{
+    await DButils.execQuery(
+    `INSERT INTO dbo.GameTable (localteam_score, visitoreteam_score) VALUES ('${req.body.localteam_score}', '${req.body.visitoreteam_score}')`
+    );
+    res.status(200).send("results added to the game");
+  }
+    catch (error) {
+    next(error);
+    }
+});

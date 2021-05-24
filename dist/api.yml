@@ -10,6 +10,7 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 tags:
+- name: Admins
 - name: Users
 - name: Teams
 - name: Players
@@ -280,7 +281,7 @@ paths:
           description: A new eventSchedule to game() has been iserted to the web
         "404":
           description: bad input parameter
-  /admin/resultGame/:id/:
+  /admin/AddResult/:
     post:
       tags:
       - admin
@@ -290,13 +291,30 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/resultGame'
+              $ref: '#/components/schemas/AddResult'
         required: true
       responses:
         "200":
-          description: A new result to game.id=id  has been inserted
+          description: A new result to game  has been inserted
         "404":
           description: bad input parameter
+  /admin/addNewGame/:
+    post:
+      tags:
+      - admin
+      summary: Add new game to the seesion and league
+      description: A JSON object contains all the detalis about the new game
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/addNewGame'
+        required: true
+      responses:
+        "201":
+          description: Game Added
+        "401":
+          description: The teams cant play on that date, its taken
   /teams/teamFullDetails/{teamId}:
     get:
       tags:
@@ -458,13 +476,15 @@ components:
           type: string
           description: what happend in the event
           example: Jovany rosso put goal at by passs he got from....
-    resultGame:
+    AddResult:
       type: object
       properties:
-        homeTeamScore:
+        game_id:
+          type: integer
+        localteam_score:
           type: integer
           example: 4
-        awayTeamScore:
+        visitoreteam_score:
           type: integer
           example: 5
     PlayerPreview:
@@ -507,9 +527,44 @@ components:
           example: haim revivo
         position:
           type: integer
-          description: player postion
-          example: 1
+          description: player postion between 1-12    0- it's mean no filter by position
+          example: 0
         teamname:
           type: string
           description: team name
           example: tel aviv
+    addNewGame:
+      type: object
+      properties:
+        localteam:
+          type: string
+          description: Home team name
+          example: Hapoel Beer-Sheva
+        visitorteam:
+          type: string
+          description: Away team name
+          example: Macabi Haifa
+        date:
+          type: string
+          description: the game date
+          example: 22/2/21 00:14:00
+        fild:
+          type: string
+          description: where the game will take place, the estadion name
+          example: Beer-Sheva estadion
+        mainJudge:
+          type: string
+          description: judge name
+          example: Maradona
+        judge1:
+          type: string
+          description: judge name
+          example: Barak Obama
+        judge2:
+          type: string
+          description: judge name
+          example: Messi Gomes
+        judge3:
+          type: string
+          description: judge name
+          example: Naor Ben Shitrit
