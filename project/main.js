@@ -51,6 +51,7 @@ const users = require("./routes/users");
 const league = require("./routes/league");
 const teams = require("./routes/teams");
 const guest = require("./routes/guest");
+const admin = require ("./routes/admin");
 //#endregion
 
 //#region cookie middleware
@@ -78,6 +79,7 @@ app.use("/users", users);
 app.use("/league", league);
 app.use("/teams", teams);
 app.use("/guest",guest);
+app.use("/admin", admin);
 app.use(auth);
 
 
