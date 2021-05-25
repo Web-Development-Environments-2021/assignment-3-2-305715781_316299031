@@ -16,4 +16,14 @@ router.get("/teamFullDetails/:teamId", async (req, res, next) => {
   }
 });
 
+
+// router.get("/teamGamesDetails", async (req, res, next) => {
+//   let team_details = [];
+//   try {
+
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
 module.exports = router;
