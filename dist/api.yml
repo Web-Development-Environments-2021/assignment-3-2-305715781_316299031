@@ -10,7 +10,7 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 tags:
-- name: Admins
+- name: Admin
 - name: Users
 - name: Teams
 - name: Players
@@ -245,7 +245,6 @@ paths:
                 $ref: '#/components/schemas/PlayerPreview'
         "401":
           description: bad input parameter
-  
   /admin/eventSchedule/:
     post:
       tags:
@@ -278,6 +277,8 @@ paths:
       responses:
         "200":
           description: A new result to game  has been inserted
+        "403":
+          description: game id not exist
         "404":
           description: bad input parameter
   /admin/addNewGame/:
@@ -321,6 +322,45 @@ paths:
                 $ref: '#/components/schemas/Team'
         "404":
           description: teamId is not exists
+  /game/gameDetails/{game_id}:
+    get:
+      tags:
+      - Games
+      summary: get full deatils about a game
+      description: useful for game page
+      parameters:
+      - name: game_id
+        in: path
+        description: game's id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: data about the game
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/addNewGame'
+        "404":
+          description: game_id is not exists
+  /game/gameTable/:
+    get:
+      tags:
+      - Games
+      summary: get full game table
+      description: useful for mangment league page
+      responses:
+        "200":
+          description: data about the games
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/addNewGame'
+        "404":
+          description: table not exist
 components:
   schemas:
     register:
@@ -404,7 +444,7 @@ components:
     favoritGame:
       type: object
       properties:
-        date:
+        date-time:
           type: string
           description: date and time
           example: 2017-07-21T17:32:28.000+0000
@@ -448,13 +488,10 @@ components:
           type: integer
           description: An event belongs to the game
           example: 234565
-        data:
+        date:
           type: string
-          description: which event happend
-          example: goal/ red/yellow tickect / injury / change player/ offense
-        hour:
-          type: integer
-          description: when its happend in hour
+          description: time stemp
+          example: 2019-07-21T20:23:00.000+0000
         minute:
           type: integer
           description: when its happend in minute

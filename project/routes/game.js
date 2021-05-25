@@ -3,8 +3,19 @@ var router = express.Router();
 const DButils = require("./utils/DButils");
 const players_utils = require("./utils/players_utils");
 
+// detail about game
+
 router.get("/gameDetails", async (req, res, next) => {
-  try {
+  let flag= false;
+  try{
+    // check if game exist in the DB 
+    const games= await DButils.execQuery("SELECT game_id FROM Games")
+    if (games.find((x) => x.game_id === req.body.game_id)) {
+      flag=true;
+    }
+    if (flag ===false)
+      throw { status: 409, message: "Game Not Exist" };
+
     const game_details =  await DButils.execQuery("SELECT * FROM dbo.Games");
     if(game_details.find((x) => x.game_id === req.body.game_id)){
         const {localteam, vistoreteam, date, fild, mainJudge, judge1, judge2, judge3,localteam_score,visitoreteam_score} = x;
@@ -44,6 +55,20 @@ router.get("/gameDetails", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+});
+
+
+
+//return games Table
+router.get("/gameTable", async (req, res, next) => {
+  try{
+  const games = await DButils.execQuery(`SELECT * FROM Games`)
+ 
+  res.status(200).send(games);
+}catch(error){
+    next(error);
+  }
+
 });
 
 module.exports = router;
