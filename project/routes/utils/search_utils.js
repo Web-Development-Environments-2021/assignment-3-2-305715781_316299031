@@ -47,7 +47,31 @@ async function searchTeamByName(search_name){
     return teams_found;
 }
 
-exports.searchTeamByName = searchTeamByName;
+
+
+//-------------------------------Search Funtions For Team by id------------------------------------
+
+// param - team_id - the value we are looking by him
+// return - team name
+async function searchTeamByID(team_id){
+    // let teams_id_array = await getTeamsBySeason(SEASON_ID);
+    // let teams_found = extractRelevantTeamID(teams_id_array, team_id)
+    // return teams_found;
+    try{
+    let team_info = await axios.get(`${api_domain}/teams/${team_id}`, {
+        params: {
+          api_token: process.env.api_token,
+        },
+    });
+    
+    let team_name= team_info.data.data.name
+    return team_name;
+    }catch(error){
+        throw { status: 404, message: "Team Not Exist" };
+    }
+}
+
+
 
 
 
@@ -163,10 +187,12 @@ function extractRelevantPlayerData2(players_info) {
 
     exports.getPlayers = getPlayers;
 
-
+    exports.searchTeamByID = searchTeamByID;
 
 
 
 
 
     //==============================================Search Function Games=================================
+
+  

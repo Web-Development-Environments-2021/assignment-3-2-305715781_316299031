@@ -3,6 +3,10 @@ var router = express.Router();
 const DButils = require("./utils/DButils");
 const players_utils = require("./utils/players_utils");
 
+
+/**
+ * This path returns team details of according to the team id
+ */
 router.get("/teamFullDetails/:teamId", async (req, res, next) => {
   let team_details = [];
   try {
@@ -15,15 +19,5 @@ router.get("/teamFullDetails/:teamId", async (req, res, next) => {
     next(error);
   }
 });
-
-
-// router.get("/teamGamesDetails", async (req, res, next) => {
-//   let team_details = [];
-//   try {
-
-//   } catch (error) {
-//     next(error);
-//   }
-// });
 
 module.exports = router;

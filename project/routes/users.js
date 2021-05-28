@@ -4,6 +4,8 @@ const DButils = require("./utils/DButils");
 const users_utils = require("./utils/users_utils");
 const players_utils = require("./utils/players_utils");
 const teams_utils = require("./utils/teamsFavorite_utils")
+const game_utils = require ("./utils/game_utils");
+
 /**
  * Authenticate all incoming requests by middleware
  */
@@ -61,7 +63,9 @@ router.get("/favoritePlayers", async (req, res, next) => {
 
 
 // -------------------------------------------------------- Favorite Team Functions-----------------------------------
-
+/**
+ * This path gets body with team_id and save this team in the favorites list of the logged-in user
+ */
 router.post("/favoriteTeams", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
@@ -73,6 +77,9 @@ router.post("/favoriteTeams", async (req, res, next) => {
   }
 });
 
+/**
+ * This path returns the favorites teams that were saved by the logged-in user
+ */
 router.get("/favoriteTeams", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
@@ -86,6 +93,52 @@ router.get("/favoriteTeams", async (req, res, next) => {
   }
 });
 
+
+
+
+// -------------------------------------------------------- Favorite Game Functions-----------------------------------
+
+/**
+ * This path gets body with game_id and save this game in the favorites list of the logged-in user
+ */
+router.post("/favoriteGames", async (req, res, next) => {
+  try {
+    const user_id = req.session.user_id;
+    const team_id = req.body.game_id;
+    await users_utils.markGameAsFavorite(user_id, team_id);
+    res.status(201).send("The game successfully saved as favorite");
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * This path returns the favorites games that were saved by the logged-in user
+ */
+router.get("/favoriteGames", async (req, res, next) => {
+  try {
+    const user_id = req.session.user_id;
+    const games_ids = await users_utils.getFavoriteGames(user_id);
+    if(games_ids.length === 0 ){
+      throw { status: 409, message: "Iser Dosen't Have Favorite Future Games" };
+    }
+    let future_games_info_array = []
+    for (let game_id of games_ids){
+        let game_details = await game_utils.getGameDetails(game_id);
+        if(new Date(game_details.game_date) > new Date()){
+          future_games_info_array.push(game_details)
+        }
+    }
+
+    if(future_games_info_array.length >3){
+      res.send(future_games_info_array.slice(0,3));
+    }
+
+    res.status(201).send(future_games_info_array);
+  } catch (error) {
+    next(error);
+  }
+});
 
 
 module.exports = router;

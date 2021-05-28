@@ -36,13 +36,17 @@ router.use(async function (req, res, next) {
 
 
 //===============================================================Add game=============================================================
+
+/**
+ * This path add new game to the game table
+ */
 router.post("/addNewGame", async(req, res, next) => {
   try{
     // only the Representative of the Football Association can add game to a session 
     // check the current user is RoAF
     let isMainRoAF = false
-    const RoafDB = await DButils.execQuery("SELECT user_id FROM dbo.Admins");
-    if(RoafDB.find((x) => x.user_id === req.session.user_id)){
+    const adminsDB = await DButils.execQuery("SELECT user_id FROM dbo.Admins");
+    if(adminsDB.find((x) => x.user_id === req.session.user_id)){
       isMainRoAF = true
     }
     if(!isMainRoAF){
@@ -65,12 +69,12 @@ router.post("/addNewGame", async(req, res, next) => {
       throw { status: 409, message: "The teams can't play on that date, it's taken" };
 
     // check the judges exsist
-    let isMainJudge = false
-    let isJudge1 = false
-    let isJudge2 = false
-    let isJudge3 = false
+    // let isMainJudge = false
+    // let isJudge1 = false
+    // let isJudge2 = false
+    // let isJudge3 = false
 
-    const judgeDB = await DButils.execQuery("SELECT user_id FROM dbo.Judges");
+    // const judgeDB = await DButils.execQuery("SELECT user_id FROM dbo.Judges");
     // if(judgeDB.find((x) => x.name === mainJudge)){
     //   isMainJudge = true
     // }
@@ -128,7 +132,11 @@ router.post("/addNewGame", async(req, res, next) => {
   }
 });
 
-// add result to game
+//===============================================================Add game result=============================================================
+
+/**
+ * This path add to a game it's result in the game table
+ */
 router.post("/AddResult", async (req, res, next) =>
 {
   let flag= false;
@@ -151,9 +159,11 @@ router.post("/AddResult", async (req, res, next) =>
   }
 });
 
+//===============================================================Add game event=============================================================
 
-// add event to game
-
+/**
+ * This path add to a game eventt in the game events table
+ */
 router.post("/eventSchedule", async (req, res, next) =>
 {
   let flag= false;

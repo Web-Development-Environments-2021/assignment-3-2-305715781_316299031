@@ -41,13 +41,14 @@ async function markGameAsFavorite(user_id,game_id){
 }
 
 async function getFavoriteGames(user_id){
-  const game_ids = await DButils.execQuery(
-    `select game_id from FavoriteGames where user_id='${user_id}'`
-  );
-  return game_ids
+  let games_id_array = [];
+  const games_id = await DButils.execQuery(`select game_id from dbo.FavoriteGames where user_id='${user_id}'`);
+  games_id.map((info) => {
+    let game_id = info["game_id"];
+    games_id_array.push(game_id)
+  });
+  return games_id_array
 }
-
-
 
 
 
@@ -59,3 +60,4 @@ exports.getFavoriteTeams = getFavoriteTeams;
 
 exports.markGameAsFavorite = markGameAsFavorite;
 exports.getFavoriteGames = getFavoriteGames;
+

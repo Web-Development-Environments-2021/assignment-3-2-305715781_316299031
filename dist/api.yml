@@ -1,5 +1,14 @@
 ---
 openapi: 3.0.0
+# servers:
+#   # Added by API Auto Mocking Plugin
+#   # Added by API Auto Mocking Plugin
+#   - description: SwaggerHub API Auto Mocking
+#     url: https://virtserver.swaggerhub.com/naorsa198/football/1.0.0
+#   - description: SwaggerHub API Auto Mocking
+#     url: https://virtserver.swaggerhub.com/nicolekenig/Football/1.0.0
+#   - description: SwaggerHub API Auto Mocking
+#     url: https://virtserver.swaggerhub.com/nicolekenig/Register/1.0.0
 info:
   title: Simple Inventory API
   description: This is a simple API
@@ -72,7 +81,7 @@ paths:
   /users/favoritePlayers/:
     get:
       tags:
-      - User
+      - Users
       - Players
       summary: my favorite players
       description: By passing in the appropriate options, you can get your favorite players that store in the DB.
@@ -144,7 +153,7 @@ paths:
       tags:
       - Users
       - Games
-      summary: my favorite games
+      summary: my top 3 favorite games
       description: By passing in the appropriate options, you can get your favorite games that store in the DB.
       responses:
         "201":
@@ -248,7 +257,7 @@ paths:
   /admin/eventSchedule/:
     post:
       tags:
-      - admin
+      - Admin
       summary: eventSchedule
       description: A JSON object contains all the detalis about the events from a game
       requestBody:
@@ -265,7 +274,7 @@ paths:
   /admin/AddResult/:
     post:
       tags:
-      - admin
+      - Admin
       summary: add result the game
       description: A JSON object contains all the detalis about the result of the game
       requestBody:
@@ -284,7 +293,7 @@ paths:
   /admin/addNewGame/:
     post:
       tags:
-      - admin
+      - Admin
       summary: Add new game to the seesion and league
       description: A JSON object contains all the detalis about the new game
       requestBody:
@@ -343,9 +352,60 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/addNewGame'
+                $ref: '#/components/schemas/gameDetails'
         "404":
           description: game_id is not exists
+          
+  /game/getTeamFutureGames/{team_id}:
+    get:
+      tags:
+      - Games
+      summary: get team all future games info 
+      description: useful for game page
+      parameters:
+      - name: team_id
+        in: path
+        description: team's id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: data about team future games
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/gameDetails'
+        "404":
+          description: team_id is not exists
+
+  /game/getTeamOldeGames/{team_id}:
+    get:
+      tags:
+      - Games
+      summary: get team all old games info 
+      description: useful for game page
+      parameters:
+      - name: team_id
+        in: path
+        description: team's id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: data about team old games
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/gameDetails'
+        "404":
+          description: team_id is not exists
+          
   /game/gameTable/:
     get:
       tags:
@@ -441,32 +501,48 @@ components:
           type: integer
           description: id of the team
           example: 85
+
     favoritGame:
       type: object
       properties:
-        date-time:
-          type: string
-          description: date and time
-          example: 2017-07-21T17:32:28.000+0000
+        game_id:
+          type: integer
+          description: Game id number
+          example: 3
         localteam:
           type: string
-          description: home team mane
-          example: Macabi Tel Aviv
-        visitoreteam:
+          description: Home team name
+          example: AGF
+        visitorteam:
           type: string
-          description: away team mane
-          example: Macabi Haifa
+          description: Away team name
+          example: Ronders
+        date:
+          type: string
+          format: date-time
+          description: the game date
+          example: '2021-07-15 20:00:00'
         fild:
           type: string
-          description: fild mane
-          example: Blomfiled
-        result:
+          description: where the game will take place, the estadion name
+          example: Denmark Stadium
+        mainJudge:
           type: string
-          example: 2:3
-        events:
-          type: object
-          description: events occur in game
-          example: 2017-07-21T17:32:28Z goal ronaldo
+          description: judge name
+          example: Bar Natan
+        judge1:
+          type: string
+          description: judge name
+          example: Adler Ziv
+        judge2:
+          type: string
+          description: judge name
+          example: Halmon Eliv
+        judge3:
+          type: string
+          description: judge name
+          example: Adi Tom
+       
     SearchTeam:
       type: object
       properties:
@@ -491,7 +567,7 @@ components:
         date:
           type: string
           description: time stemp
-          example: 2019-07-21T20:23:00.000+0000
+          example: '2019-07-21 20:23:00'
         minute:
           type: integer
           description: when its happend in minute
@@ -569,8 +645,9 @@ components:
           example: Macabi Haifa
         date:
           type: string
+          format: date-time	
           description: the game date
-          example: 22/2/21 00:14:00
+          example: '2022-02-21 00:14:00'
         fild:
           type: string
           description: where the game will take place, the estadion name
@@ -591,3 +668,81 @@ components:
           type: string
           description: judge name
           example: Naor Ben Shitrit
+    
+    
+    gameEvent:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date-time	
+          description: the game date
+          example: '2022-02-21 00:14:00'
+        description:
+          type: string
+          description: the spesific game event 
+          example: 'Yellow card Bahattin Aygün'
+        game_id:
+          type: integer
+          description: game is number
+          example: 1
+        minute:
+          type: integer
+          description: The minute of the game that the event happened
+          example: 30
+          
+          
+    gameDetails:
+      type: object
+      properties:
+        game_id:
+          type: integer
+          description: Game id number
+          example: 1
+        localteam:
+          type: string
+          description: Home team name
+          example: Hapoel Beer-Sheva
+        visitorteam:
+          type: string
+          description: Away team name
+          example: Macabi Haifa
+        date:
+          type: string
+          format: date-time
+          description: the game date
+          example: '2019-08-02 20:00:00'
+        fild:
+          type: string
+          description: where the game will take place, the estadion name
+          example: Beer-Sheva estadion
+        mainJudge:
+          type: string
+          description: judge name
+          example: Maradona
+        judge1:
+          type: string
+          description: judge name
+          example: Barak Obama
+        judge2:
+          type: string
+          description: judge name
+          example: Messi Gomes
+        judge3:
+          type: string
+          description: judge name
+          example: Naor Ben Shitrit
+        game_events:
+          type: object
+            # %ref: '#/components/schemas/gameEvent'
+          description: game event log array
+          example: [{game_id: 2, date: ' 2019-08-02 20:00:00', minute: 30, description: 'Yellow card Bahattin Aygün'}]
+            
+    
+        
+        
+    
+        
+            
+            
+          
