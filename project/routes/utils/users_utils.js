@@ -3,7 +3,7 @@ const DButils = require("./DButils");
 //----------------------------------------------------------Players function----------------------------------
 async function markPlayerAsFavorite(user_id, player_id) {
   await DButils.execQuery(
-    `insert into FavoritePlayers values ('${user_id}',${player_id})`
+    `INSERT INTO FavoritePlayers VALUES ('${user_id}',${player_id})`
   );
 }
 
@@ -36,7 +36,7 @@ async function getFavoriteTeams(user_id){
 //mark game as favorite
 async function markGameAsFavorite(user_id,game_id){
   await DButils.execQuery(
-    `insert into FavoriteGames values ('${user_id}',${game_id})`
+    `insert into FavoriteGames(user_id,game_id) values ('${user_id}',${game_id})`
   );
 }
 

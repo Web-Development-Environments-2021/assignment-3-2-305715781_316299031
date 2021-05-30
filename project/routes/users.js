@@ -25,6 +25,32 @@ router.use(async function (req, res, next) {
 });
 
 
+//Middleware delet all old games from favorite game table of currenct user
+
+router.use(async function (req, res, next) {
+ try{
+     const user_id = req.session.user_id;
+      const games_ids= await DButils.execQuery(`SELECT game_id FROM FavoriteGames where user_id = '${user_id}'`)
+      .catch((err) => next(err));
+      for (let game_id of games_ids)
+      {
+        let game_details = await game_utils.getGameDetails(game_id.game_id);
+        if(new Date(game_details.game_date) > new Date()){
+              continue;
+            
+        }
+        else{
+            await DButils.execQuery(`DELETE FROM FavoriteGames WHERE user_id ='${req.session.user_id}' AND game_id='${game_id.game_id}'`)
+          .catch((err) => next(err));
+        }
+      }
+      next();
+  } catch (error) {
+    next(error);}
+});
+  
+   
+
 // -------------------------------------------------------- Favorite Player Functions-----------------------------------
 
 
@@ -34,7 +60,7 @@ router.use(async function (req, res, next) {
 router.post("/favoritePlayers", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
-    const player_id = req.body.playerId;
+    const{player_id} = req.body;
     await users_utils.markPlayerAsFavorite(user_id, player_id);
     res.status(201).send("The player successfully saved as favorite");
   } catch (error) {
@@ -104,8 +130,8 @@ router.get("/favoriteTeams", async (req, res, next) => {
 router.post("/favoriteGames", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
-    const team_id = req.body.game_id;
-    await users_utils.markGameAsFavorite(user_id, team_id);
+    const game_id = req.body.game_id;
+    await users_utils.markGameAsFavorite(user_id, game_id);
     res.status(201).send("The game successfully saved as favorite");
   } catch (error) {
     next(error);
@@ -124,7 +150,9 @@ router.get("/favoriteGames", async (req, res, next) => {
     }
     let future_games_info_array = []
     for (let game_id of games_ids){
-        let game_details = await game_utils.getGameDetails(game_id);
+      //  let game_details = await game_utils.getGameDetails(game_id);
+          let promises = game_utils.game_utils.getGameDetails(game_id);
+          let game_details = Promise.all(promises);
         if(new Date(game_details.game_date) > new Date()){
           future_games_info_array.push(game_details)
         }
