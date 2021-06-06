@@ -1,0 +1,33 @@
+{
+  "name": "project-backend-npm",
+  "version": "1.0.0",
+  "description": "project package.json",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Web-Development-Environments-2021/assignment-3-2-305715781_316299031.git"
+  },
+  "keywords": [
+    "package.json"
+  ],
+  "author": "Nicole Kenigsberg ans Naor Saraf",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Web-Development-Environments-2021/assignment-3-2-305715781_316299031/issues"
+  },
+  "homepage": "https://github.com/Web-Development-Environments-2021/assignment-3-2-305715781_316299031#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "bcryptjs": "^2.4.3",
+    "client-sessions": "^0.8.0",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "mssql": "^7.1.0",
+    "path": "^0.12.7"
+  }
+}
