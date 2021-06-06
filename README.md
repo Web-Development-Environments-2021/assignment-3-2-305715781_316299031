@@ -5,7 +5,7 @@
 https://github.com/Web-Development-Environments-2021/assignment-3-2-305715781_316299031
 
 ### Link to out API:
---need to add--
+https://app.swaggerhub.com/apis/naorsa198/simple-inventory_api/1.0.0
  
 
 ### About:
