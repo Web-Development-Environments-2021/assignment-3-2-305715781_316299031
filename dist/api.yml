@@ -1,23 +1,10 @@
----
 openapi: 3.0.0
-# servers:
-#   # Added by API Auto Mocking Plugin
-#   # Added by API Auto Mocking Plugin
-#   - description: SwaggerHub API Auto Mocking
-#     url: https://virtserver.swaggerhub.com/naorsa198/football/1.0.0
-#   - description: SwaggerHub API Auto Mocking
-#     url: https://virtserver.swaggerhub.com/nicolekenig/Football/1.0.0
-#   - description: SwaggerHub API Auto Mocking
-#     url: https://virtserver.swaggerhub.com/nicolekenig/Register/1.0.0
 info:
-  title: Simple Inventory API
-  description: This is a simple API
-  contact:
-    email: you@your-company.com
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: api
+  description: API for  project
   version: 1.0.0
+servers:
+- url: /
 tags:
 - name: Admin
 - name: Users
@@ -25,6 +12,7 @@ tags:
 - name: Players
 - name: Games
 - name: Auth
+- name: League
   description: All user function
 paths:
   /register/:
@@ -331,6 +319,23 @@ paths:
                 $ref: '#/components/schemas/Team'
         "404":
           description: teamId is not exists
+
+  /game/gameTable/:
+    get:
+      tags:
+      - Games
+      summary: get full game table
+      description: useful for mangment league page
+      responses:
+        "200":
+          description: data about the games
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/addNewGame'
+        "404":
+          description: table not exist
+
   /game/gameDetails/{game_id}:
     get:
       tags:
@@ -405,22 +410,57 @@ paths:
                 $ref: '#/components/schemas/gameDetails'
         "404":
           description: team_id is not exists
-          
-  /game/gameTable/:
+
+  /league/getLeagueFutureGames/:
     get:
       tags:
-      - Games
-      summary: get full game table
-      description: useful for mangment league page
+      - League
+      summary: get  all future games in the league
+      description: useful for league page
       responses:
         "200":
-          description: data about the games
+          description: data about league future games
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/addNewGame'
+                $ref: '#/components/schemas/gameDetails'
         "404":
-          description: table not exist
+          description: There isn't future games in the league
+
+  /league/getLeagueOldGames/:
+    get:
+      tags:
+      - League
+      summary: getleague old games info
+      description: useful for league page    
+      responses:
+        "200":
+          description: data about league old games
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/gameDetails'
+        "404":
+          description: There isn't old games in the league
+
+  /league/getNextScheduleGame/:
+    get:
+      tags:
+      - League
+      summary: get league next schedule game
+      description: useful for league page   
+      responses:
+        "200":
+          description: data about the next game
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/gameDetails'
+        "404":
+          description: There isn't future games in the league
+          
+ 
+
 components:
   schemas:
     register:
@@ -478,7 +518,7 @@ components:
           minLength: 3
           type: string
           description: username contains between 3 to 8 letters only
-          example: naor1
+          example: nicole
         password:
           maxLength: 10
           minLength: 5
@@ -487,6 +527,7 @@ components:
             password contains between 5 to 10 chars, at least on of them is a number and a special char
           format: password
           example: "123456"
+    
     favoritPlayer:
       type: object
       properties:
@@ -530,33 +571,26 @@ components:
           type: string
           description: judge name
           example: Bar Natan
-        judge1:
+        secondaryjudge:
           type: string
           description: judge name
           example: Adler Ziv
-        judge2:
-          type: string
-          description: judge name
-          example: Halmon Eliv
-        judge3:
-          type: string
-          description: judge name
-          example: Adi Tom
-       
-    SearchTeam:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Team name
-          example: Macabi Netanya
-    SearchPlayer:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Player fullname/lastname/firstname
-          example: itzik zohar
+    
+    # SearchTeam:
+    #   type: object
+    #   properties:
+    #     name:
+    #       type: string
+    #       description: Team name
+    #       example: Macabi Netanya
+    # SearchPlayer:
+    #   type: object
+    #   properties:
+    #     name:
+    #       type: string
+    #       description: Player fullname/lastname/firstname
+    #       example: itzik zohar
+
     eventSchedule:
       type: object
       properties:
@@ -575,6 +609,7 @@ components:
           type: string
           description: what happend in the event
           example: Jovany rosso put goal at by passs he got from....
+    
     AddResult:
       type: object
       properties:
@@ -586,6 +621,7 @@ components:
         visitoreteam_score:
           type: integer
           example: 5
+    
     PlayerPreview:
       type: object
       properties:
@@ -656,40 +692,31 @@ components:
           type: string
           description: judge name
           example: Maradona
-        judge1:
+        secondaryjudge:
           type: string
           description: judge name
           example: Barak Obama
-        judge2:
-          type: string
-          description: judge name
-          example: Messi Gomes
-        judge3:
-          type: string
-          description: judge name
-          example: Naor Ben Shitrit
-    
-    
-    gameEvent:
-      type: object
-      properties:
-        date:
-          type: string
-          format: date-time	
-          description: the game date
-          example: '2022-02-21 00:14:00'
-        description:
-          type: string
-          description: the spesific game event 
-          example: 'Yellow card Bahattin Aygün'
-        game_id:
-          type: integer
-          description: game is number
-          example: 1
-        minute:
-          type: integer
-          description: The minute of the game that the event happened
-          example: 30
+         
+    # gameEvent:
+    #   type: object
+    #   properties:
+    #     date:
+    #       type: string
+    #       format: date-time	
+    #       description: the game date
+    #       example: '2022-02-21 00:14:00'
+    #     description:
+    #       type: string
+    #       description: the spesific game event 
+    #       example: 'Yellow card Bahattin Aygün'
+    #     game_id:
+    #       type: integer
+    #       description: game is number
+    #       example: 1
+    #     minute:
+    #       type: integer
+    #       description: The minute of the game that the event happened
+    #       example: 30
           
           
     gameDetails:
@@ -720,21 +747,12 @@ components:
           type: string
           description: judge name
           example: Maradona
-        judge1:
+        secondaryjudge:
           type: string
           description: judge name
           example: Barak Obama
-        judge2:
-          type: string
-          description: judge name
-          example: Messi Gomes
-        judge3:
-          type: string
-          description: judge name
-          example: Naor Ben Shitrit
         game_events:
           type: object
-            # %ref: '#/components/schemas/gameEvent'
           description: game event log array
           example: [{game_id: 2, date: ' 2019-08-02 20:00:00', minute: 30, description: 'Yellow card Bahattin Aygün'}]
             

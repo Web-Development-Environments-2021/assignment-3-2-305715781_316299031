@@ -13,13 +13,6 @@ async function getGameEvents(game_id){
         game_events_array.push(event);
         });
     return game_events_array;
-    // const {game_id,date,minute,description} = game_events;
-    // return{
-    //     game_id:game_id,
-    //     date:date,
-    //     minute:minute,
-    //     description: description,
-    // };
 }
 
 // --------------------------------------------------------Game Details-----------------------------------
@@ -29,7 +22,7 @@ async function getGameEvents(game_id){
 async function getGameDetails(game_id){
     // dont need to check if the game exsist 'gameDetails/:game_id" check it.
     const game_details =  await DButils.execQuery(`SELECT * FROM dbo.Games WHERE game_id='${game_id}'`);
-    const {localteam, vistoreteam, date, fild, mainJudge, judge1, judge2, judge3,localteam_score,visitoreteam_score} = game_details[0];
+    const {localteam, vistoreteam, date, fild, mainJudge, secondaryjudge, localteam_score,visitoreteam_score} = game_details[0];
     // check if this is an old game
     if(new Date(date) < new Date()){
         const game_events = await getGameEvents(game_id);
@@ -39,9 +32,7 @@ async function getGameDetails(game_id){
             game_date : date,
             location : fild,
             main_judge :mainJudge,
-            judge_1 : judge1,
-            judge_2 : judge2,
-            judge_3 : judge3,
+            secondaryjudge : secondaryjudge,
             local_team_score : localteam_score,
             visitore_team_score: visitoreteam_score,
             game_events : game_events
@@ -54,9 +45,7 @@ async function getGameDetails(game_id){
         game_date : date,
         location : fild,
         main_judge :mainJudge,
-        judge_1 : judge1,
-        judge_2 : judge2,
-        judge_3 : judge3,            
+        secondaryjudge : secondaryjudge,         
     };
   }
 
@@ -68,7 +57,7 @@ async function extractTeamFutureGamesId(team_id){
     let team_name = await search_utils.searchTeamByID(team_id);
     //get team future game ids
     let future_games_id_array = [];
-    let games_info = await DButils.execQuery(`SELECT game_id,localteam,vistoreteam,date FROM Games`)
+    let games_info = await DButils.execQuery(`SELECT game_id,localteam,vistoreteam,date FROM dbo.Games`)
     games_info.map((info) => 
         {
             if((info["localteam"] == team_name || info["vistoreteam"] == team_name) && info["date"] > new Date()){
@@ -88,7 +77,7 @@ async function extractTeamOldGamesId(team_id){
     let team_name = await search_utils.searchTeamByID(team_id);
     //get team future game ids
     let old_games_id_array = [];
-    games_info = await DButils.execQuery(`SELECT game_id,localteam,vistoreteam,date FROM Games`)
+    games_info = await DButils.execQuery(`SELECT game_id,localteam,vistoreteam,date FROM dbo.Games`)
     games_info.map((info) => 
         {
             if((info["localteam"] == team_name || info["vistoreteam"] == team_name) && info["date"] <= new Date()){

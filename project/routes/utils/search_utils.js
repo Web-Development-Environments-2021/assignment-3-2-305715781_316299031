@@ -1,8 +1,8 @@
 const axios = require("axios");
-const teams_utils = require("./teamsFavorite_utils")
+const teams_utils = require("./teams_utils")
 const players_utils = require("./players_utils")
 
-const { param } = require("../users");
+const { param } = require("../users")
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 const SEASON_ID = 17328;
 //-------------------------------Search Funtions For Team by name------------------------------------

@@ -3,7 +3,7 @@ var router = express.Router();
 const DButils = require("./utils/DButils");
 const users_utils = require("./utils/users_utils");
 const players_utils = require("./utils/players_utils");
-const teams_utils = require("./utils/teamsFavorite_utils")
+const teams_utils = require("./utils/teams_utils")
 const game_utils = require ("./utils/game_utils");
 
 /**
