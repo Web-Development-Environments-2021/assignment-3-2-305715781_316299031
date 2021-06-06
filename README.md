@@ -6,24 +6,13 @@ https://github.com/Web-Development-Environments-2021/assignment-3-2-305715781_31
 
 ### Link to out API:
 --need to add--
+ 
 
-### .env details:
-tedious_userName=nicole
-tedious_password=rXs4gfkg 
-tedious_server=footballleaguesql.database.windows.net
-tedious_database=LeagueDB
-  options: {
-    encrypt: true,
-    enableArithAbort: true
-  }
-
-  COOKIE_SECRET=shalom
-  api_token=3hE3qLqssMKTJMEps2Qd3mYyBW43M1UaZyG1FHTAcfcMJIK1jyKGf8lpe4yB
-
-
-### You should know:
+### About:
 * To login as the Football Association Representor type:
+  
   username: NicoleKenig
+  
   password: nicole@26
 
 * We have implemented the bonus part:
@@ -31,3 +20,21 @@ tedious_database=LeagueDB
    - [x] adding game results
    - [x] adding events to games
    
+* .env details to login to out DB:
+  tedious_userName=nicole
+
+  tedious_password=rXs4gfkg 
+
+  tedious_server=footballleaguesql.database.windows.net
+
+  tedious_database=LeagueDB
+
+  options: {
+      encrypt: true,
+      enableArithAbort: true
+    }
+
+    COOKIE_SECRET=shalom
+
+    api_token=3hE3qLqssMKTJMEps2Qd3mYyBW43M1UaZyG1FHTAcfcMJIK1jyKGf8lpe4yB
+
