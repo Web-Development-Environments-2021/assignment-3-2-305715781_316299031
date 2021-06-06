@@ -15,12 +15,8 @@ https://app.swaggerhub.com/apis/naorsa198/simple-inventory_api/1.0.0
   
   password: nicole@26
 
-* We have implemented the bonus part:
-   - [x] add and get user favorite team,player and game
-   - [x] adding game results
-   - [x] adding events to games
-   
 * .env details to login to out DB:
+  
   tedious_userName=nicole
 
   tedious_password=rXs4gfkg 
@@ -38,3 +34,8 @@ https://app.swaggerhub.com/apis/naorsa198/simple-inventory_api/1.0.0
 
     api_token=3hE3qLqssMKTJMEps2Qd3mYyBW43M1UaZyG1FHTAcfcMJIK1jyKGf8lpe4yB
 
+* We have implemented the bonus part:
+   - [x] add and get user favorite team,player and game
+   - [x] adding game results
+   - [x] adding events to games
+   
