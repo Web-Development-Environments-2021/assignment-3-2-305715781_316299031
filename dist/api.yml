@@ -505,7 +505,7 @@ components:
           description: the user email
           format: email
           example: ladygaga@gmail.com
-        image-url:
+        imageurl:
           type: string
           description: URL for the user's image
           format: URL

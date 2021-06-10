@@ -1,5 +1,7 @@
 const DButils = require("./DButils");
 
+
+
 //----------------------------------------------------------Players function----------------------------------
 async function markPlayerAsFavorite(user_id, player_id) {
   await DButils.execQuery(

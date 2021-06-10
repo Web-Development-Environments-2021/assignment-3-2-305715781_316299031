@@ -24,7 +24,7 @@ router.post("/Register", async (req, res, next) => {
 
     // add the new username
     await DButils.execQuery(
-      `INSERT INTO dbo.Users (username, password) VALUES ('${req.body.username}', '${hash_password}')`
+      `INSERT INTO dbo.Users (username, password,imgUrl) VALUES ('${req.body.username}', '${hash_password}','${req.body.imageurl}')`
     );
     res.status(201).send("user created");
   } catch (error) {
@@ -51,7 +51,7 @@ router.post("/Login", async (req, res, next) => {
     req.session.user_id = user.user_id;
 
     // return cookie
-    res.status(200).send("login succeeded");
+    res.status(200).send(user.imgUrl);
   } catch (error) {
     next(error);
   }
@@ -61,5 +61,11 @@ router.post("/Logout", function (req, res) {
   req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
   res.send({ success: true, message: "logout succeeded" });
 });
+
+
+
+//--------------------------------------------Profile User-----------------------------------------
+
+
 
 module.exports = router;
