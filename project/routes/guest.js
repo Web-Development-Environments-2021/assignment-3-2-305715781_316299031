@@ -35,6 +35,21 @@ router.get("/Search/team/:searchname", async (req, res, next) => {
     }
   });
   
+
+  router.get("/Search/filter/player/:searchfilter", async (req, res, next) => {
+    let team_details = [];
+    try {
+      const player_by_name = await search_utils.getPlayers(
+        req.params.searchfilter 
+      );
+      //we should keep implementing team page.....
+      res.send(player_by_name);
+    } catch (error) {
+      next(error);
+    }
+  });
+  
+
   module.exports = router;
   
 

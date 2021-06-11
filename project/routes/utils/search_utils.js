@@ -4,7 +4,7 @@ const players_utils = require("./players_utils")
 
 const { param } = require("../users")
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
-const SEASON_ID = 17328;
+const SEASON_ID = 17335;
 //-------------------------------Search Funtions For Team by name------------------------------------
 
 // return all teams in the current season = 17328 => in  Superlegue
@@ -83,7 +83,7 @@ async function searchTeamByID(team_id){
 // return all players start with the name and they are in the league
 
 async function getPlayers(search_name){
-
+    let filterFlag = false;
     let array_search=search_name.split(",");
     let name;
     let position;

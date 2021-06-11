@@ -217,7 +217,7 @@ paths:
                 $ref: '#/components/schemas/PlayerPreview'
         "401":
           description: bad input parameter
-  /guest/search/player/filter/{searchfilter}:
+  /guest/search/filter/player/{searchfilter}:
     get:
       tags:
       - Guest
