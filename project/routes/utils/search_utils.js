@@ -4,21 +4,21 @@ const players_utils = require("./players_utils")
 
 const { param } = require("../users")
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
-const SEASON_ID = 17335;
+const SEASON_ID = 17328;
 //-------------------------------Search Funtions For Team by name------------------------------------
 
 // return all teams in the current season = 17328 => in  Superlegue
 async function getTeamsBySeason(SEASON_ID){
 let teams_id_array= [];
-const teamsID = await axios.get(`${api_domain}/teams/season/${SEASON_ID}` , {
-    params: {
-        api_token: process.env.api_token,
-    },
-});
-teamsID.data.data.map((teamDetails) =>
-    teams_id_array.push(teamDetails.id)
-);
-return teams_id_array;
+    const teamsID = await axios.get(`${api_domain}/teams/season/${SEASON_ID}` , {
+        params: {
+            api_token: process.env.api_token,
+        },
+    });
+    teamsID.data.data.map((teamDetails) =>
+        teams_id_array.push(teamDetails.id)
+    );
+    return teams_id_array;
 }
 
 
@@ -29,7 +29,7 @@ async function extractRelevantTeamName(teams_id_array, search_name){
     teams_info =await teams_utils.showFavoriteTeams(teams_id_array);
     teams_info.map((info) => 
         {
-            if(info["name"].startsWith(search_name,0)){
+            if(info["name"].toLowerCase().startsWith(search_name.toLowerCase(),0)){
                     relavent_teams_by_name.push(info);
             }
          }
@@ -40,6 +40,7 @@ async function extractRelevantTeamName(teams_id_array, search_name){
 async function extractRelevantTeamInfo(teams_id_array, search_name){
     let teams_info = [];
     let relavent_teams_by_name=[];
+    // teams_info = extractRelevantTeamName(teams_id_array,search_name);
     teams_info =await teams_utils.showFavoriteTeams(teams_id_array);
     return teams_info;
 }
@@ -48,8 +49,10 @@ async function extractRelevantTeamInfo(teams_id_array, search_name){
 // return - all theams that start with this value
 
 async function searchTeamByName(search_name){
+    
     let teams_id_array = await getTeamsBySeason(SEASON_ID);
-    let teams_found = await extractRelevantTeamInfo(teams_id_array, search_name)
+    let teams_found = await extractRelevantTeamName(teams_id_array, search_name)
+
     return teams_found;
 }
 

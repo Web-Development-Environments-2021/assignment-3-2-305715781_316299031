@@ -52,3 +52,4 @@ function extraactRelvantTeamData(teams_info){
 
   exports.TeamInfo = TeamInfo;
   exports.showFavoriteTeams = showFavoriteTeams;
+  exports.extraactRelvantTeamData = extraactRelvantTeamData;
