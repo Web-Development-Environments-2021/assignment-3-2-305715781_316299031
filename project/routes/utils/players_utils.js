@@ -75,6 +75,24 @@ function extractFullPlayerData(players_info) {
     };
   });
 }
+function extractFullPlayersData(players_info) {
+  return players_info.map((player_info) => {
+    const { fullname, image_path, position_id ,common_name, nationality, birthdate,birthcountry,height,weight } = player_info;
+    const { name } = player_info.team.data;
+    return {
+      name: fullname,
+      image: image_path,
+      position: position_id,
+      team_name: name,
+      CommonName: common_name,
+      nationality: nationality,
+      birthdate: birthdate,
+      birthcountry: birthcountry,
+      height:height,
+      weight:weight,
+    };
+  });
+}
 
 //--------------------------------------------------------------------Search Filters-------------------------------------
 
@@ -132,3 +150,4 @@ exports.getPlayerIdsByTeam = getPlayerIdsByTeam;
 exports.getPlayersByTeam = getPlayersByTeam;
 exports.getPlayersInfo = getPlayersInfo;
 exports.filterByTeamNamePlayers = filterByTeamNamePlayers;
+exports.extractFullPlayersData = extractFullPlayersData;

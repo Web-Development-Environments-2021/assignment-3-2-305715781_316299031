@@ -23,7 +23,6 @@ return teams_id_array;
 
 
 //return all teams that theire names include search_name with the name and logo 
-
 async function extractRelevantTeamName(teams_id_array, search_name){
     let teams_info = [];
     let relavent_teams_by_name=[];
@@ -37,13 +36,20 @@ async function extractRelevantTeamName(teams_id_array, search_name){
     );
     return relavent_teams_by_name;
 }
+//return team data for tea page
+async function extractRelevantTeamInfo(teams_id_array, search_name){
+    let teams_info = [];
+    let relavent_teams_by_name=[];
+    teams_info =await teams_utils.showFavoriteTeams(teams_id_array);
+    return teams_info;
+}
 
 // param - searchname - the value we are looking by him
 // return - all theams that start with this value
 
 async function searchTeamByName(search_name){
     let teams_id_array = await getTeamsBySeason(SEASON_ID);
-    let teams_found = extractRelevantTeamName(teams_id_array, search_name)
+    let teams_found = await extractRelevantTeamInfo(teams_id_array, search_name)
     return teams_found;
 }
 
@@ -137,7 +143,7 @@ async function getPlayers(search_name){
 
     // pass over all the ids and returen relvant data for each one
     if(filterFlag==false){ 
-            players_info = extractRelevantPlayerData2(relavent_players);
+            players_info = players_utils.extractFullPlayersData(relavent_players);
         }  
     
     else{
@@ -184,10 +190,9 @@ function extractRelevantPlayerData2(players_info) {
 
 
     exports.searchTeamByName = searchTeamByName;
-
     exports.getPlayers = getPlayers;
-
     exports.searchTeamByID = searchTeamByID;
+    exports.extractRelevantTeamInfo = extractRelevantTeamInfo;
 
 
 
