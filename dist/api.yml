@@ -287,6 +287,7 @@ paths:
       requestBody:
         content:
           application/json:
+            type: object
             schema:
               $ref: '#/components/schemas/addNewGame'
         required: true
@@ -294,7 +295,9 @@ paths:
         "201":
           description: Game Added
         "401":
-          description: The teams cant play on that date, its taken
+          description: Only RoAF can add new games
+        "409":
+          description: League ID doesn't exist
   /teams/teamFullDetails/{teamId}:
     get:
       tags:
@@ -671,31 +674,39 @@ components:
     addNewGame:
       type: object
       properties:
-        localteam:
+        league_name:
           type: string
-          description: Home team name
-          example: Hapoel Beer-Sheva
-        visitorteam:
+          description: League's name
+          example: Premier League
+        season:
           type: string
-          description: Away team name
-          example: Macabi Haifa
-        date:
-          type: string
-          format: date-time	
-          description: the game date
-          example: '2022-02-21 00:14:00'
-        fild:
-          type: string
-          description: where the game will take place, the estadion name
-          example: Beer-Sheva estadion
-        mainJudge:
-          type: string
-          description: judge name
-          example: Maradona
-        secondaryjudge:
-          type: string
-          description: judge name
-          example: Barak Obama
+          description: season
+          example: 2021/2022
+        #localteam:
+         # type: string
+          #description: Home team name
+          #example: Hapoel Beer-Sheva
+       # visitorteam:
+       #   type: string
+       #   description: Away team name
+        #  example: Macabi Haifa
+        #date:
+         # type: string
+        #  format: date-time	
+         # description: the game date
+          #example: '2022-02-21 00:14:00'
+        #fild:
+         # type: string
+          #description: where the game will take place, the estadion name
+          #example: Beer-Sheva estadion
+        #mainJudge:
+         # type: string
+          #description: judge name
+         # example: Maradona
+        #secondaryjudge:
+         # type: string
+         # description: judge name
+         # example: Barak Obama
          
     # gameEvent:
     #   type: object

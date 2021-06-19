@@ -5,6 +5,7 @@ const users_utils = require("./utils/users_utils");
 const players_utils = require("./utils/players_utils");
 const teams_utils = require("./utils/teams_utils");
 const admin_utils = require("./utils/admins_utils");
+const league_utils = require("./utils/league_utils");
 const { param } = require("./auth");
 
 
@@ -53,7 +54,34 @@ router.post("/addNewGame", async(req, res, next) => {
     if(!isMainRoAF){
       throw { status: 401, message: "Only RoAF can add a new game"}
     }
-    await admin_utils.addNewGame(req.body); 
+	
+	//check that league and season exist
+    const season = req.body.season;
+    const league = req.body.league_name;
+    console.log(`league: ${league}, season: ${season}`);
+    const league_id = await league_utils.validateSeasonLeague(season, league);
+    if (league_id < 0){
+      throw { status: 404, message: "League or Season Doesn't Exist in DB" };
+    }
+	
+	//check number of referees
+    const referees = await league_utils.getRefereesInSeasonLeague(league, season);
+    if (referees.length < 2) {
+      throw { status: 409, message: "Not Enough Referees!" };
+    }
+	
+	//add the games for season in league automatically by current policy
+    const games_added = await admin_utils.AddGames(season, league, league_id);
+    //throws error if no games were added
+    if (games_added == 0){
+      throw { status: 409, message: "Not Enough Teams" };
+    }
+    if (games_added < 0){
+      throw { status: 401, message: "Games Already Created" };
+    }
+	
+	
+    //await admin_utils.addNewGame(req.body); 
     res.status(201).send("Game Added");
 
   }catch (error) {
