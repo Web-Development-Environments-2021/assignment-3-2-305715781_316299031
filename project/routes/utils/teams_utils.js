@@ -27,7 +27,7 @@ async function TeamInfo(team_ids_array){
 // extract details for each team
 function extraactRelvantTeamData(teams_info){
   return teams_info.map((team) => {
-      let {name,logo_path} = team.data.data;
+      let {name,logo_path,id} = team.data.data;
       let team_name=name;
       name = team.data.data.country.data.name;
       let country_name=name;
@@ -37,6 +37,7 @@ function extraactRelvantTeamData(teams_info){
           country: country_name,
           continent: continent,
           logo_path: logo_path,
+          id: id,
       };
     }); 
   }
