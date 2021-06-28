@@ -20,4 +20,24 @@ router.get("/teamFullDetails/:teamId", async (req, res, next) => {
   }
 });
 
+
+
+router.get("/teamFromLeague", async(req,res,next) => {
+  let team_names = [] ;
+  try {
+        const teamsID = await axios.get(`${api_domain}/teams/season/${SEASON_ID}` , {
+            params: {
+                api_token: process.env.api_token,
+            },
+        });
+        teamsID.data.data.map((teamDetails) =>
+        team_names.push(teamDetails.name)
+        );
+        res.send(team_names);
+      }
+     catch (error) {
+      next(error);
+    }
+});
+
 module.exports = router;

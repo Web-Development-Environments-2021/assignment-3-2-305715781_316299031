@@ -13,27 +13,27 @@ const { param } = require("./auth");
 /**
  * Authenticate all incoming requests by middleware
  */
-router.use(async function (req, res, next) {
-  try{
-  if (req.session && req.session.user_id) {
-    DButils.execQuery("SELECT user_id FROM Admins")
-      .then((users) => {
-        if (users.find((x) => x.user_id === req.session.user_id)) {
-          req.user_id = req.session.user_id;
-          next();
-        }
-        else {
-          res.sendStatus(401);
-             }
-      })
-    }
-  else {
-    res.sendStatus(401);
-       }
-  } catch (error) {
-    next(error);
-  }
-});
+// router.use(async function (req, res, next) {
+//   try{
+//   if (req.session && req.session.user_id) {
+//     DButils.execQuery("SELECT user_id FROM Admins")
+//       .then((users) => {
+//         if (users.find((x) => x.user_id === req.session.user_id)) {
+//           req.user_id = req.session.user_id;
+//           next();
+//         }
+//         else {
+//           res.sendStatus(401);
+//              }
+//       })
+//     }
+//   else {
+//     res.sendStatus(401);
+//        }
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 
 //===============================================================Add game=============================================================
@@ -116,5 +116,19 @@ router.post("/eventSchedule", async (req, res, next) =>
     }
 });
 
+
+
+router.get("/AdminCheck/:username",async(req,res) =>{
+  try{
+    const username = req.params.username
+        const users= await DButils.execQuery("SELECT username FROM Admins")
+              .then((users) => {
+                if (users.find((x) => x.username === username)) {
+                    res.status(200).send("You are admin")
+                }})
+}catch (error) {
+  next(error);
+}
+});
 
 module.exports = router;
