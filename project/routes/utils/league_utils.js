@@ -1,10 +1,11 @@
 const axios = require("axios");
 const DButils = require("./DButils");
+const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 const LEAGUE_ID = 271;
 
 async function getLeagueDetails() {
   const league = await axios.get(
-    `https://soccer.sportmonks.com/api/v2.0/leagues/${LEAGUE_ID}`,
+    `${api_domain}/leagues/${LEAGUE_ID}`,
     {
       params: {
         include: "season",
@@ -13,7 +14,7 @@ async function getLeagueDetails() {
     }
   );
   const stage = await axios.get(
-    `https://soccer.sportmonks.com/api/v2.0/stages/${league.data.data.current_stage_id}`,
+    `${api_domain}/stages/${league.data.data.current_stage_id}`,
     {
       params: {
         api_token: process.env.api_token,
@@ -35,10 +36,24 @@ async function getLeagueDetails() {
 async function getOldLeagueGames(){
   let old_games_array = []
   const old_league_games = await DButils.execQuery(`SELECT * FROM dbo.Games`);
+  // let ids=[]
+  // old_league_games.map((info) => 
+  //       {
+  //           if(info["date"] <= new Date()){
+  //             ids.push(info["game_id"]);
+  //           }
+  //       }
+  //   );
+  // console.log("idssssssssss: " ,ids)
+  // let gameEvents = DButils.execQuery(`SELECT * FROM dbo.GameEvents where game_id ='${ids}'`);
+  // gameEvents = await Promise.all(gameEvents);
   old_league_games.map((info) => 
         {
             if(info["date"] <= new Date()){
-                old_games_array.push(info);
+              // gameEvents = Promise.all(gameEvents);
+              // console.log(info)
+              // let toAdd = info
+              old_games_array.push(info);
             }
         }
     );
@@ -82,7 +97,49 @@ async function getNextScheduleGame(){
 );
 return next_game_info;
 }
+
+// --------------------------------------------------------season in leagues functions-----------------------------------
+
+// param - season(2021/2022) , league name(Superliga)
+// return - league_id
+async function validateSeasonLeague(season, league) {
+  // CHECKS IF LEAGUE NAME EXISTS
+  const LeagueExist = await axios.get(`${api_domain}/leagues/search/${league}`,{
+    params: {
+      api_token: process.env.api_token,
+    },
+  });
+  if (LeagueExist.data.length < 1) {
+    return -1;
+  }
+  let league_id = LeagueExist.data.data[0].id;
+
+  //check season
+  const SeasonExist = await axios.get(`${api_domain}/seasons/${season}`,
+  {
+    params: {
+      api_token: process.env.api_token,
+    },
+  });
+  if (SeasonExist.data.length < 1) {
+    return -1;
+  }
+  return league_id;
+}
+
+// param - league name(Superliga),season(2021/2022)
+// return - referees
+async function getRefereesInSeasonLeague(league, season){
+  const referees = await DButils.execQuery(
+      `SELECT name FROM dbo.Judges where league='${league}' and season='${season}'`
+  );
+  return referees;
+}
+
+
 exports.getLeagueDetails = getLeagueDetails;
 exports.getOldLeagueGames = getOldLeagueGames;
 exports.getFutureLeagueGames = getFutureLeagueGames;
 exports.getNextScheduleGame = getNextScheduleGame;
+exports.validateSeasonLeague=validateSeasonLeague;
+exports.getRefereesInSeasonLeague = getRefereesInSeasonLeague;

@@ -1,6 +1,11 @@
 const { get } = require("../game");
+const axios = require("axios");
 const DButils = require("./DButils");
 const search_utils = require ("./search_utils");
+const league_utils = require("./league_utils");
+const api_domain = "https://soccer.sportmonks.com/api/v2.0";
+const SEASON_ID = 18334;
+
 
 // -------------------------------------------------------- Game event log-----------------------------------
 
@@ -89,11 +94,86 @@ async function extractTeamOldGamesId(team_id){
     return old_games_id_array;
 }
 
+// param - season(2021/2022),league name(Superliga)
+// return - games
+async function getAllGames(season, league) {
+  const games = await DButils.execQuery(
+    `SELECT * FROM dbo.Games where league='${league}' and season='${season}'`
+  );
+  return games;
+}
+
+// --------------------------------------------------------Add Games-----------------------------------
+async function addGamesByPolicy(season, league, league_id){
+    // Get All league team names
+	const all_teams = await axios.get(`${api_domain}/teams/season/${SEASON_ID}`,
+    {
+        params: {
+          include: "country",
+          api_token: process.env.api_token,
+        },
+      }
+    );
+    if (all_teams.data.length < 2){
+        return 0;
+    }
+
+    //check referees
+    const referees = await league_utils.getRefereesInSeasonLeague(league, season);
+    if (referees.length < 2) {
+        return -1;
+    }
+
+    let initial_date = new Date();
+    initial_date.setDate(initial_date.getDate() + 7);
+    let games_added = 0;
+
+    // Appending all possible games
+    let array_games = [];
+    for (let i = 0; i < all_teams.data.data.length; i++) {
+        for (let j = i + 1; j < all_teams.data.data.length; j++) {
+        array_games.push([all_teams.data.data[i], all_teams.data.data[j]]);
+        }
+    }
+
+    // Shuffling games
+    array_games.sort(() => Math.random() - 0.5);
+    for (let i = 0; i < array_games.length; i++) {
+        //randomize home\away
+        let rand_home = Math.floor(Math.random() * 2);
+        let home_team = array_games[i][0].name;
+        let away_team = array_games[i][1].name;
+
+        //get location of the game - home team field
+		let location =array_games[i][0].country.data.name+" Stadium";
+        
+        //add the game to DB
+        await DButils.execQuery(
+        `INSERT INTO dbo.Games (season, league, localteam, vistoreteam, date, fild, mainJudge, secondaryjudge) VALUES
+                ('${season}','${league}','${home_team}','${away_team}','${initial_date
+            .toISOString()
+            .slice(0, 19)
+            .replace("T", " ")}', '${location}','${
+            referees[0].name
+        }','${referees[1].name}')`
+        );
+        games_added++;
+
+        //increment date
+        initial_date.setDate(initial_date.getDate() + 7);
+
+  }
+
+  return games_added;
+
+}
 
 
 
 
-exports.getGameEvent = getGameEvents
-exports.getGameDetails = getGameDetails
-exports.extractTeamFutureGamesId = extractTeamFutureGamesId
-exports.extractTeamOldGamesId = extractTeamOldGamesId
+exports.getGameEvent = getGameEvents;
+exports.getGameDetails = getGameDetails;
+exports.extractTeamFutureGamesId = extractTeamFutureGamesId;
+exports.extractTeamOldGamesId = extractTeamOldGamesId;
+exports.getAllGames=getAllGames;
+exports.addGamesByPolicy=addGamesByPolicy;
