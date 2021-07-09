@@ -100,7 +100,7 @@ router.post("/AddResult", async (req, res, next) =>
   try{
     // check if game exist in the DB 
     const games= await DButils.execQuery("SELECT game_id FROM Games")
-    if (games.find((x) => x.game_id === req.body.game_id)) {
+    if (games.find((x) => x.game_id === parseInt(req.body.game_id))) {
       flag=true;
     }
     if (flag ===false)
