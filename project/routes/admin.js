@@ -159,4 +159,17 @@ router.get("/AdminCheck/:username",async(req,res) =>{
 }
 });
 
+
+router.post("/AdminAddGame",async(req,res) =>{
+  try{
+    await DButils.execQuery(
+      `INSERT INTO dbo.Games (localteam, vistoreteam,fild,mainJudge,secondaryjudge,date) VALUES ('${req.body.localteam}', '${req.body.vistoreteam}','${req.body.fild}','${req.body.mainJudge}', '${req.body.secondaryjudge}','${req.body.date}')`
+    );
+    res.status(201).send("add game success");
+
+}catch (error) {
+}
+});
+
+
 module.exports = router;
