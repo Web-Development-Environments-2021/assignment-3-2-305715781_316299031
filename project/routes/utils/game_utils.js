@@ -39,9 +39,11 @@ async function getGameDetails(game_id){
     const game_details =  await DButils.execQuery(`SELECT * FROM dbo.Games WHERE game_id='${game_id}'`);
     const {localteam, vistoreteam, date, fild, mainJudge, secondaryjudge, localteam_score,visitoreteam_score} = game_details[0];
     // check if this is an old game
+    const id= game_id;
     if(new Date(date) < new Date()){
         const game_events = await getGameEvents(game_id);
         return{
+            id: id,
             local_team: localteam,
             vistore_team: vistoreteam,
             game_date : date,
@@ -55,6 +57,7 @@ async function getGameDetails(game_id){
     }
     // else the game is in the fueter
     return{
+        id:id,
         local_team: localteam,
         vistore_team: vistoreteam,
         game_date : date,
