@@ -20,6 +20,16 @@ async function getGameEvents(game_id){
     return game_events_array;
 }
 
+// return - all games event log
+async function getAllGamesEvents(){
+    const game_events = await DButils.execQuery(`SELECT * FROM dbo.GameEvents`);
+    let game_events_array = []
+    game_events.map((event) => {
+        game_events_array.push(event);
+        });
+    return game_events_array;
+}
+
 // --------------------------------------------------------Game Details-----------------------------------
 
 // param - game_id - the game we want to get it's details
@@ -177,3 +187,4 @@ exports.extractTeamFutureGamesId = extractTeamFutureGamesId;
 exports.extractTeamOldGamesId = extractTeamOldGamesId;
 exports.getAllGames=getAllGames;
 exports.addGamesByPolicy=addGamesByPolicy;
+exports.getAllGamesEvents = getAllGamesEvents;

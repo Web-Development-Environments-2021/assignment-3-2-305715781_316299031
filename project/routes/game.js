@@ -89,10 +89,23 @@ router.get("/getTeamOldeGames/:team_id", async (req,res,next) => {
   }catch(error){
     next(error);
   }
+
 });
 
-
-
+//return  all games evnts
+router.get("/allGamesEvents", async (req, res, next) => {
+  try{
+    const games_events =  await game_utils.getAllGamesEvents();
+    if(games_events.length < 1){
+      throw { status: 409, message: "There isn't games events" };
+    }
+ 
+  res.status(200).send(games_events);
+  
+  }catch(error){
+    next(error);
+  }
+});
 
 
 module.exports = router;
