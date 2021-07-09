@@ -161,7 +161,6 @@ router.get("/favoriteGames", async (req, res, next) => {
     if(future_games_info_array.length >3){
       res.send(future_games_info_array.slice(0,3));
     }
-
     res.status(201).send(future_games_info_array);
   } catch (error) {
     next(error);

@@ -34,7 +34,7 @@ router.get("/getLeagueFutureGames", async (req, res, next) => {
   try {
     const league_future_games = await league_utils.getFutureLeagueGames();
     if(league_future_games < 1){
-      res.send("There is no future games in the league");
+      res.status(200).send("There is no future games in the league");
     }
     res.send(league_future_games);
   } catch (error) {

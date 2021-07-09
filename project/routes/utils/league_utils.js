@@ -2,6 +2,7 @@ const axios = require("axios");
 const DButils = require("./DButils");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 const LEAGUE_ID = 271;
+const game_utils = require("./game_utils");
 
 async function getLeagueDetails() {
   const league = await axios.get(
@@ -57,6 +58,7 @@ async function getOldLeagueGames(){
             }
         }
     );
+
   return old_games_array;
 }
 
