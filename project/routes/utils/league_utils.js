@@ -5,7 +5,8 @@ const LEAGUE_ID = 271;
 const game_utils = require("./game_utils");
 
 async function getLeagueDetails() {
-  const league = await axios.get(
+  let league, stage;
+  league = await axios.get(
     `${api_domain}/leagues/${LEAGUE_ID}`,
     {
       params: {
@@ -14,7 +15,8 @@ async function getLeagueDetails() {
       },
     }
   );
-  const stage = await axios.get(
+  if(league.data.data.current_stage_id != null){
+  stage = await axios.get(
     `${api_domain}/stages/${league.data.data.current_stage_id}`,
     {
       params: {
@@ -22,10 +24,15 @@ async function getLeagueDetails() {
       },
     }
   );
+    stage = stage.data.data.name;
+}
+  else{
+    stage = null;
+  }
   return {
     league_name: league.data.data.name,
     current_season_name: league.data.data.season.data.name,
-    current_stage_name: stage.data.data.name,
+    current_stage_name: stage,
     // next game details should come from DB
   };
 }

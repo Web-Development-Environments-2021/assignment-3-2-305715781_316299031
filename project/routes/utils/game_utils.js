@@ -43,7 +43,7 @@ async function getGameDetails(game_id){
     if(new Date(date) < new Date()){
         const game_events = await getGameEvents(game_id);
         return{
-            id: id,
+            game_id: id,
             localteam: localteam,
             vistoreteam: vistoreteam,
             date : date,
@@ -57,7 +57,7 @@ async function getGameDetails(game_id){
     }
     // else the game is in the fueter
     return{
-        id:id,
+        game_id:id,
         localteam: localteam,
         vistoreteam: vistoreteam,
         date : date,

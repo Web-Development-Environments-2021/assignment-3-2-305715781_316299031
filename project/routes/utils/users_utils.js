@@ -38,7 +38,7 @@ async function getFavoriteTeams(user_id){
 //mark game as favorite
 async function markGameAsFavorite(user_id,game_id){
   await DButils.execQuery(
-    `insert into FavoriteGames(user_id,game_id) values ('${user_id}',${game_id})`
+    `INSERT INTO dbo.FavoriteGames(user_id,game_id) VALUES  ('${user_id}',${game_id})`
   );
 }
 

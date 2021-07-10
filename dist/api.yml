@@ -4,6 +4,8 @@ info:
   description: API for  project
   version: 1.0.0
 servers:
+# Added by API Auto Mocking Plugin
+- description: SwaggerHub API Auto Mocking
 - url: /
 tags:
 - name: Admin
@@ -287,7 +289,6 @@ paths:
       requestBody:
         content:
           application/json:
-            type: object
             schema:
               $ref: '#/components/schemas/addNewGame'
         required: true
@@ -461,6 +462,22 @@ paths:
                 $ref: '#/components/schemas/gameDetails'
         "404":
           description: There isn't future games in the league
+
+  /league/getDetails:
+    get:
+      tags:
+      - League
+      summary: Return the details about the current league
+      responses:
+        "200":
+          description: data about the current league returned
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/League'
+        "400":
+          description: wrong input parameters
           
  
 
@@ -624,6 +641,22 @@ components:
         visitoreteam_score:
           type: integer
           example: 5
+
+    League:
+      type: object
+      properties:
+        league_name:
+          type: string
+          description: league name
+          example: Superliga
+        current_season_name:
+          type: string
+          description: current season name
+          example: 2020/2021
+        current_stage_name:
+          type: string
+          description: current stage name
+          example: Championship Round
     
     PlayerPreview:
       type: object
@@ -692,7 +725,7 @@ components:
         #  example: Macabi Haifa
         #date:
          # type: string
-        #  format: date-time	
+        #  format: date-time  
          # description: the game date
           #example: '2022-02-21 00:14:00'
         #fild:
@@ -713,7 +746,7 @@ components:
     #   properties:
     #     date:
     #       type: string
-    #       format: date-time	
+    #       format: date-time  
     #       description: the game date
     #       example: '2022-02-21 00:14:00'
     #     description:
@@ -766,12 +799,3 @@ components:
           type: object
           description: game event log array
           example: [{game_id: 2, date: ' 2019-08-02 20:00:00', minute: 30, description: 'Yellow card Bahattin Aygün'}]
-            
-    
-        
-        
-    
-        
-            
-            
-          
