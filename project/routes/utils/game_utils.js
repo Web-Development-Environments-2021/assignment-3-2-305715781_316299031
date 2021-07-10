@@ -44,25 +44,25 @@ async function getGameDetails(game_id){
         const game_events = await getGameEvents(game_id);
         return{
             id: id,
-            local_team: localteam,
-            vistore_team: vistoreteam,
-            game_date : date,
-            location : fild,
-            main_judge :mainJudge,
-            secondaryjudge : secondaryjudge,
-            local_team_score : localteam_score,
-            visitore_team_score: visitoreteam_score,
+            localteam: localteam,
+            vistoreteam: vistoreteam,
+            date : date,
+            fild : fild,
+            mainJudge :mainJudge,
+            secondaryjudge : secondaryjudge,  
+            localteam_score : localteam_score,
+            visitoreteam_score: visitoreteam_score,
             game_events : game_events
         };
     }
     // else the game is in the fueter
     return{
         id:id,
-        local_team: localteam,
-        vistore_team: vistoreteam,
-        game_date : date,
-        location : fild,
-        main_judge :mainJudge,
+        localteam: localteam,
+        vistoreteam: vistoreteam,
+        date : date,
+        fild : fild,
+        mainJudge :mainJudge,
         secondaryjudge : secondaryjudge,         
     };
   }
@@ -190,4 +190,4 @@ exports.extractTeamFutureGamesId = extractTeamFutureGamesId;
 exports.extractTeamOldGamesId = extractTeamOldGamesId;
 exports.getAllGames=getAllGames;
 exports.addGamesByPolicy=addGamesByPolicy;
-exports.getAllGamesEvents = getAllGamesEvents;
+exports.getAllGamesEvents = getAllGamesEvents

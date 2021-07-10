@@ -3,7 +3,7 @@ var router = express.Router();
 const DButils = require("./utils/DButils");
 const game_utils = require ("./utils/game_utils");
 const search_utils = require ("./utils/search_utils");
-
+const users_utils = require("./utils/users_utils");
 //----------------------------------------------------------Game functions----------------------------------
 
 /**
@@ -107,5 +107,30 @@ router.get("/allGamesEvents", async (req, res, next) => {
   }
 });
 
-
+router.get("/favoriteGames/:user_name", async (req, res, next) => {
+    try {
+      let user_id = await DButils.execQuery(`SELECT user_id FROM dbo.Users where username='${req.params.user_name}'`);
+      user_id = user_id[0].user_id
+      const games_ids = await users_utils.getFavoriteGames(user_id);
+      if(games_ids.length === 0 ){
+        throw { status: 409, message: "Iser Dosen't Have Favorite Future Games" };
+      }
+      let future_games_info_array = []
+      for (let game_id of games_ids){
+        //  let game_details = await game_utils.getGameDetails(game_id);
+            let game_details = await game_utils.getGameDetails(game_id);
+            // let game_details = Promise.all(promises);
+          if(new Date(game_details.date) > new Date()){
+            future_games_info_array.push(game_details)
+          }
+      }
+  
+      if(future_games_info_array.length >3){
+        res.send(future_games_info_array.slice(0,3));
+      }
+      res.status(201).send(future_games_info_array);
+    } catch (error) {
+      next(error);
+    }
+});
 module.exports = router;
